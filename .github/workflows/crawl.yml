@@ -1,0 +1,32 @@
+name: 대구 경매 자동 수집
+
+on:
+  schedule:
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Python 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 패키지 설치
+        run: pip install requests beautifulsoup4 lxml
+
+      - name: 경매 데이터 수집
+        run: python crawler.py
+
+      - name: data.json 커밋 & 푸시
+        run: |
+          git config user.name "auction-bot"
+          git config user.email "bot@auction.com"
+          git add data.json
+          git diff --staged --quiet || git commit -m "📊 경매 데이터 자동 업데이트 $(date '+%Y-%m-%d %H:%M')"
+          git push
