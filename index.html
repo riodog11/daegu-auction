@@ -152,7 +152,7 @@ header{background:var(--white);border-bottom:1px solid var(--border);padding:0 3
 <header>
   <div>
     <div class="logo">KB<span>부동산</span></div>
-    <div class="logo-sub">대구경매 공인중개사 함스장</div>
+    <div class="logo-sub">대구경매 공인중개사 함소장</div>
   </div>
   <nav class="nav">
     <a href="#">경매물건</a>
@@ -177,7 +177,7 @@ header{background:var(--white);border-bottom:1px solid var(--border);padding:0 3
     <span class="chip" onclick="setQ(this)">남향 40평대 경매</span>
     <span class="chip" onclick="setQ(this)">실투자금 1억 이하</span>
     <span class="chip" onclick="setQ(this)">이번달 입찰 예정</span>
-    <span class="chip" onclick="setQ(this)">함스장 추천 물건</span>
+    <span class="chip" onclick="setQ(this)">함소장 추천 물건</span>
   </div>
 </div>
 
@@ -196,7 +196,7 @@ header{background:var(--white);border-bottom:1px solid var(--border);padding:0 3
   <!-- 필터 버튼 -->
   <div class="filters" id="filterRow">
     <button class="filter-btn active" onclick="filterBy('all',this)">전체</button>
-    <button class="filter-btn" onclick="filterBy('expert',this)">⭐ 함스장 추천</button>
+    <button class="filter-btn" onclick="filterBy('expert',this)">⭐ 함소장 추천</button>
     <button class="filter-btn" onclick="filterBy('수성구',this)">수성구</button>
     <button class="filter-btn" onclick="filterBy('달서구',this)">달서구</button>
     <button class="filter-btn" onclick="filterBy('북구',this)">북구</button>
@@ -309,7 +309,7 @@ function renderCards(items) {
     return `
     <div class="card ${isExpert ? 'expert-pick' : ''}" style="animation-delay:${i*.07}s">
       <div class="card-price-banner">
-        ${isExpert ? '<span class="expert-badge">⭐ 함스장 추천</span>' : ''}
+        ${isExpert ? '<span class="expert-badge">⭐ 함소장 추천</span>' : ''}
         <div class="card-location">📍 ${p.address.split(' ').slice(0,3).join(' ')}</div>
         <div class="card-apt-name">${p.apt_name || p.address} ${p.area || ''}</div>
         <div class="price-row">
@@ -400,7 +400,7 @@ async function doSearch() {
     const dbText = DB.map(p =>
       `[ID:${p.case_no}] ${p.apt_name} | 지역:${p.address} | 방향:${p.direction} | ` +
       `면적:${p.area} | 층:${p.floor} | 최저가:${p.min_price}만원 | ` +
-      `할인율:${p.discount}% | 입찰일:${p.bid_date} | 추천:${p.blog_url ? '함스장추천' : '일반'}`
+      `할인율:${p.discount}% | 입찰일:${p.bid_date} | 추천:${p.blog_url ? '함소장추천' : '일반'}`
     ).join('\n');
 
     const res = await fetch("https://api.anthropic.com/v1/messages", {
