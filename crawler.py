@@ -1,14 +1,15 @@
 """
-대구 법원경매 자동 수집기 v8
+대구 법원경매 자동 수집기 v9
 =====================================
-- 시/도 select(mf_sbx_rletRpdtSdLst)에서 대구광역시 선택
-- 전체 페이지 수집
+- JS로 모든 select 찾고 대구광역시 설정
+- 부동산 클릭 후 충분히 대기
 """
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support import expected_conditions as EC
 import json, time, re, logging
 from datetime import datetime
 
@@ -70,6 +71,37 @@ def parse_price(text):
     return total
 
 
+def set_daegu_filter(driver):
+    """JavaScript로 대구광역시 필터 설정"""
+    result = driver.execute_script("""
+        var selects = document.querySelectorAll('select');
+        var info = [];
+        var daeguSet = false;
+        
+        for(var sel of selects) {
+            var name = sel.name || sel.id || '';
+            var opts = Array.from(sel.options).map(o => ({v: o.value, t: o.text.trim()}));
+            info.push('select[' + name + ']: ' + opts.length + '개');
+            
+            // 대구광역시 옵션 찾기
+            for(var opt of opts) {
+                if(opt.t.includes('대구') || opt.v.includes('대구')) {
+                    sel.value = opt.v;
+                    sel.dispatchEvent(new Event('change', {bubbles: true}));
+                    info.push('✅ 대구 설정: ' + opt.v + ' / ' + opt.t + ' in ' + name);
+                    daeguSet = true;
+                    break;
+                }
+            }
+        }
+        info.push('대구 설정 결과: ' + daeguSet);
+        return info;
+    """)
+    for line in (result or []):
+        log.info(f"  {line}")
+    return any("✅" in str(r) for r in (result or []))
+
+
 def collect_page(driver):
     items = []
     tables = driver.find_elements(By.CSS_SELECTOR, "table")
@@ -128,7 +160,7 @@ def collect_page(driver):
 
 def run():
     log.info("=" * 50)
-    log.info("대구 법원경매 수집 시작 v8")
+    log.info("대구 법원경매 수집 시작 v9")
     log.info(f"시작: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     log.info("=" * 50)
 
@@ -138,51 +170,38 @@ def run():
     try:
         # 메인 페이지 접속
         driver.get(f"{BASE_URL}/pgj/index.on")
-        time.sleep(4)
+        time.sleep(5)
 
         # 부동산 버튼 클릭
         try:
             btn = driver.find_element(By.CSS_SELECTOR, "input[value='부동산']")
             driver.execute_script("arguments[0].click();", btn)
             log.info("부동산 클릭")
-            time.sleep(3)
+            time.sleep(5)  # 더 오래 대기
         except Exception as e:
             log.warning(f"부동산 버튼 실패: {e}")
 
-        # ── 시/도 select에서 대구광역시 선택 ──────────────
-        try:
-            sel_el = driver.find_element(
-                By.CSS_SELECTOR,
-                "select[name='mf_sbx_rletRpdtSdLst']"
-            )
-            sel = Select(sel_el)
-            opts = [(o.get_attribute("value"), o.text.strip()) for o in sel.options]
-            log.info(f"시/도 옵션: {opts}")
+        # select 목록 전체 로그
+        selects = driver.find_elements(By.TAG_NAME, "select")
+        log.info(f"현재 select 수: {len(selects)}")
+        for sel_el in selects:
+            name = sel_el.get_attribute("name") or sel_el.get_attribute("id") or ""
+            try:
+                sel = Select(sel_el)
+                opts = [(o.get_attribute("value"), o.text.strip()) for o in sel.options]
+                log.info(f"  select[{name}]: {opts}")
+            except:
+                pass
 
-            # 대구광역시 선택
-            for val, txt in opts:
-                if "대구" in txt:
-                    sel.select_by_value(val)
-                    log.info(f"✅ 대구광역시 선택: {txt} ({val})")
-                    time.sleep(2)
-                    break
+        # 대구 필터 설정
+        log.info("대구 필터 설정 시도...")
+        daegu_set = set_daegu_filter(driver)
+        log.info(f"대구 필터 설정 결과: {daegu_set}")
 
-        except Exception as e:
-            log.warning(f"시/도 select 실패: {e}")
-            # JavaScript로 직접 시도
-            result = driver.execute_script("""
-                var sel = document.querySelector("select[name='mf_sbx_rletRpdtSdLst']");
-                if(sel) {
-                    sel.value = '대구광역시';
-                    sel.dispatchEvent(new Event('change'));
-                    return '대구광역시 설정 완료';
-                }
-                return '시/도 select 없음';
-            """)
-            log.info(f"JS 시/도 설정: {result}")
+        if daegu_set:
             time.sleep(2)
 
-        # ── 검색하기 클릭 ─────────────────────────────────
+        # 검색하기 클릭
         try:
             btn = driver.find_element(By.CSS_SELECTOR, "input[value='검색하기']")
             driver.execute_script("arguments[0].click();", btn)
@@ -193,22 +212,19 @@ def run():
 
         log.info(f"검색 후 URL: {driver.current_url}")
 
-        # ── 전체 페이지 수집 ──────────────────────────────
+        # 전체 페이지 수집
         page = 1
         while page <= 50:
             items = collect_page(driver)
             log.info(f"페이지 {page}: {len(items)}건")
-
             if not items:
                 break
-
             all_items.extend(items)
 
-            # 다음 페이지
             try:
                 next_btn = driver.find_element(
                     By.CSS_SELECTOR,
-                    "a.next, .next_page, a[title='다음페이지']"
+                    "a.next, .next_page, a[title='다음페이지'], a[title='다음']"
                 )
                 driver.execute_script("arguments[0].click();", next_btn)
                 time.sleep(3)
@@ -222,8 +238,21 @@ def run():
                     time.sleep(3)
                     page += 1
                 except:
-                    log.info("마지막 페이지 도달")
+                    log.info("마지막 페이지")
                     break
+
+        # 대구 물건만 필터
+        daegu_items = [
+            item for item in all_items
+            if "대구" in item.get("address", "") or "대구" in item.get("court", "")
+        ]
+        log.info(f"전체 수집: {len(all_items)}건 / 대구 필터: {len(daegu_items)}건")
+
+        if daegu_items:
+            all_items = daegu_items
+            log.info("대구 물건만 저장")
+        else:
+            log.warning("대구 필터 결과 없음 — 전체 저장")
 
     except Exception as e:
         log.error(f"전체 오류: {e}")
