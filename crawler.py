@@ -1,15 +1,14 @@
 """
-대구 법원경매 자동 수집기 v6
+대구 법원경매 자동 수집기 v7
 =====================================
-- 법원 select 상세 분석
-- 검색 후 메인 페이지에서 결과 수집
+- select name: mf_sbx_rletRpdtCortLst 사용
+- 대구 법원 옵션 텍스트로 선택
 """
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
-from selenium.webdriver.support import expected_conditions as EC
 import json, time, re, logging
 from datetime import datetime
 
@@ -25,17 +24,6 @@ log = logging.getLogger(__name__)
 
 BASE_URL = "https://www.courtauction.go.kr"
 DATA_FILE = "data.json"
-
-DAEGU_COURTS = {
-    "B30G0000": "대구지방법원",
-    "B30B0000": "대구지방법원 경주지원",
-    "B30C0000": "대구지방법원 김천지원",
-    "B30D0000": "대구지방법원 안동지원",
-    "B30E0000": "대구지방법원 상주지원",
-    "B30F0000": "대구지방법원 의성지원",
-    "B30H0000": "대구지방법원 영덕지원",
-    "B30I0000": "대구지방법원 포항지원",
-}
 
 
 def get_driver():
@@ -82,39 +70,74 @@ def parse_price(text):
     return total
 
 
-def collect_results(driver):
-    """현재 페이지에서 경매 결과 수집"""
+def collect_all_pages(driver):
+    """현재 검색 결과 전체 페이지 수집"""
+    all_items = []
+    page = 1
+
+    while True:
+        items = collect_page(driver)
+        log.info(f"  페이지 {page}: {len(items)}건")
+        if not items:
+            break
+        all_items.extend(items)
+
+        # 다음 페이지 버튼 찾기
+        try:
+            next_btn = driver.find_element(
+                By.CSS_SELECTOR,
+                "a.next, .paging_next, a[title='다음페이지'], a[title='다음']"
+            )
+            driver.execute_script("arguments[0].click();", next_btn)
+            time.sleep(3)
+            page += 1
+        except:
+            # 페이지 번호로 시도
+            try:
+                next_num = driver.find_element(
+                    By.XPATH,
+                    f"//a[text()='{page+1}']"
+                )
+                driver.execute_script("arguments[0].click();", next_num)
+                time.sleep(3)
+                page += 1
+            except:
+                break
+
+        if page > 50:  # 안전장치
+            break
+
+    return all_items
+
+
+def collect_page(driver):
+    """현재 페이지 결과 수집"""
     items = []
     tables = driver.find_elements(By.CSS_SELECTOR, "table")
-    log.info(f"테이블 수: {len(tables)}")
 
-    for i, table in enumerate(tables):
-        rows = table.find_elements(By.CSS_SELECTOR, "tr")
-        if len(rows) < 2:
-            continue
+    for table in tables:
+        rows = table.find_elements(By.CSS_SELECTOR, "tbody tr")
+        if not rows:
+            rows = table.find_elements(By.CSS_SELECTOR, "tr")[1:]
 
-        # 헤더 확인
-        header = rows[0].find_elements(By.CSS_SELECTOR, "th, td")
-        header_texts = [h.text.strip() for h in header]
-        log.info(f"테이블[{i}] 헤더: {header_texts}")
-
-        # 데이터 행 수집
-        for row in rows[1:]:
+        for row in rows:
             try:
                 cols = row.find_elements(By.TAG_NAME, "td")
-                if len(cols) < 4:
+                if len(cols) < 5:
                     continue
                 texts = [c.text.strip() for c in cols]
                 case_no = texts[0]
                 if not case_no or "타경" not in case_no:
                     continue
 
-                log.info(f"  물건: {texts[:6]}")
                 address = texts[2] if len(texts) > 2 else ""
                 appraisal = parse_price(texts[3]) if len(texts) > 3 else 0
                 min_price = parse_price(texts[4]) if len(texts) > 4 else 0
                 bid_date = texts[5] if len(texts) > 5 else ""
                 discount = round((1 - min_price/appraisal)*100) if appraisal and min_price else 0
+
+                # 법원명 추출
+                court = texts[1] if len(texts) > 1 else ""
 
                 detail_url = ""
                 try:
@@ -125,7 +148,7 @@ def collect_results(driver):
 
                 items.append({
                     "case_no": case_no,
-                    "court": "",
+                    "court": court,
                     "address": address,
                     "apt_name": " ".join(address.split()[-2:]) if address else "",
                     "area": "",
@@ -151,7 +174,7 @@ def collect_results(driver):
 
 def run():
     log.info("=" * 50)
-    log.info("대구 법원경매 수집 시작 v6")
+    log.info("대구 법원경매 수집 시작 v7")
     log.info(f"시작: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     log.info("=" * 50)
 
@@ -167,68 +190,38 @@ def run():
         try:
             btn = driver.find_element(By.CSS_SELECTOR, "input[value='부동산']")
             driver.execute_script("arguments[0].click();", btn)
-            log.info("부동산 버튼 클릭")
+            log.info("부동산 클릭")
             time.sleep(3)
         except Exception as e:
             log.warning(f"부동산 버튼 실패: {e}")
 
-        # ── select 전체 분석 (법원 코드 찾기) ──────────
-        selects = driver.find_elements(By.TAG_NAME, "select")
-        log.info(f"select 수: {len(selects)}")
+        # 법원 select 찾기 (name=mf_sbx_rletRpdtCortLst)
+        try:
+            sel_el = driver.find_element(
+                By.CSS_SELECTOR,
+                "select[name='mf_sbx_rletRpdtCortLst']"
+            )
+            sel = Select(sel_el)
 
-        court_select_el = None
-        for sel_el in selects:
-            try:
-                name = sel_el.get_attribute("name") or sel_el.get_attribute("id") or ""
-                sel = Select(sel_el)
-                options = [(o.get_attribute("value"), o.text.strip()) for o in sel.options]
-                log.info(f"select[{name}]: {options[:5]}")
+            # 전체 옵션 출력
+            all_opts = [(o.get_attribute("value"), o.text.strip()) for o in sel.options]
+            log.info(f"법원 옵션 전체: {all_opts}")
 
-                # 대구 법원 코드가 있는지 확인
-                vals = [o[0] for o in options]
-                if "B30G0000" in vals or any("대구" in o[1] for o in options):
-                    log.info(f"  ✅ 법원 select 발견! name={name}")
-                    court_select_el = sel_el
-                    break
-            except:
-                continue
+            # 대구 관련 옵션 찾기
+            daegu_opts = [(v, t) for v, t in all_opts if "대구" in t]
+            log.info(f"대구 관련 옵션: {daegu_opts}")
 
-        # 대구 전체 선택 (법원 코드 직접 설정)
-        if court_select_el:
-            try:
-                sel = Select(court_select_el)
-                # 대구 관련 옵션 찾기
-                for opt in sel.options:
-                    val = opt.get_attribute("value") or ""
-                    txt = opt.text.strip()
-                    if "대구" in txt or val == "B30G0000":
-                        sel.select_by_value(val)
-                        log.info(f"법원 선택: {txt} ({val})")
-                        time.sleep(1)
-                        break
-            except Exception as e:
-                log.warning(f"법원 선택 실패: {e}")
-        else:
-            # JavaScript로 직접 값 설정 시도
-            result = driver.execute_script("""
-                var selects = document.querySelectorAll('select');
-                var info = [];
-                for(var sel of selects) {
-                    var name = sel.name || sel.id || '';
-                    var opts = Array.from(sel.options).map(o => o.value + ':' + o.text);
-                    info.push(name + ' => ' + opts.slice(0,3).join(', '));
-                    
-                    // 대구 법원 코드 설정 시도
-                    if(opts.some(o => o.includes('B30G') || o.includes('대구'))) {
-                        sel.value = 'B30G0000';
-                        sel.dispatchEvent(new Event('change'));
-                        info.push('대구 선택 시도!');
-                    }
-                }
-                return info;
-            """)
-            log.info(f"JS select 결과: {result}")
-            time.sleep(1)
+            if daegu_opts:
+                # 첫 번째 대구 옵션 선택
+                val, txt = daegu_opts[0]
+                sel.select_by_value(val)
+                log.info(f"대구 법원 선택: {txt} ({val})")
+                time.sleep(1)
+            else:
+                log.warning("대구 옵션 없음 - 전체 검색으로 진행")
+
+        except Exception as e:
+            log.warning(f"법원 select 오류: {e}")
 
         # 검색하기 클릭
         try:
@@ -237,35 +230,22 @@ def run():
             log.info("검색하기 클릭!")
             time.sleep(5)
         except Exception as e:
-            log.warning(f"검색하기 실패: {e}")
+            log.warning(f"검색 버튼 실패: {e}")
 
-        # 현재 URL 및 페이지 확인
         log.info(f"검색 후 URL: {driver.current_url}")
-        log.info(f"검색 후 타이틀: {driver.title}")
 
-        # 메인 페이지 결과 수집
-        items = collect_results(driver)
-        log.info(f"메인 페이지 수집: {len(items)}건")
-        all_items.extend(items)
+        # 결과 수집
+        items = collect_all_pages(driver)
+        log.info(f"수집 완료: {len(items)}건")
 
-        # 다음 페이지 수집
-        page = 2
-        while page <= 20:
-            try:
-                next_btn = driver.find_element(
-                    By.XPATH,
-                    f"//a[contains(@onclick,'{page}') or text()='{page}']"
-                )
-                driver.execute_script("arguments[0].click();", next_btn)
-                time.sleep(3)
-                new_items = collect_results(driver)
-                if not new_items:
-                    break
-                all_items.extend(new_items)
-                log.info(f"페이지 {page}: {len(new_items)}건")
-                page += 1
-            except:
-                break
+        # 대구 물건만 필터
+        daegu_items = [
+            item for item in items
+            if "대구" in item.get("address", "") or "대구" in item.get("court", "")
+        ]
+        log.info(f"대구 물건 필터: {len(daegu_items)}건")
+
+        all_items = daegu_items if daegu_items else items
 
     except Exception as e:
         log.error(f"전체 오류: {e}")
