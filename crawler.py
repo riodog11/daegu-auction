@@ -1,7 +1,8 @@
 """
-대구 법원경매 자동 수집기 v5
+대구 법원경매 자동 수집기 v6
 =====================================
-iframe 구조 + "검색하기" 버튼 방식
+- 법원 select 상세 분석
+- 검색 후 메인 페이지에서 결과 수집
 """
 
 from selenium import webdriver
@@ -81,198 +82,76 @@ def parse_price(text):
     return total
 
 
-def switch_to_search_frame(driver):
-    """검색 폼이 있는 iframe으로 전환"""
-    # 메인 프레임으로
-    driver.switch_to.default_content()
+def collect_results(driver):
+    """현재 페이지에서 경매 결과 수집"""
+    items = []
+    tables = driver.find_elements(By.CSS_SELECTOR, "table")
+    log.info(f"테이블 수: {len(tables)}")
 
-    iframes = driver.find_elements(By.TAG_NAME, "iframe")
-    log.info(f"iframe 수: {len(iframes)}")
-
-    for i, iframe in enumerate(iframes):
-        src = iframe.get_attribute("src") or ""
-        name = iframe.get_attribute("name") or iframe.get_attribute("id") or ""
-        log.info(f"  iframe[{i}]: name={name} src={src[:80]}")
-
-    # iframe 순서대로 검색 폼 찾기
-    for i, iframe in enumerate(iframes):
-        try:
-            driver.switch_to.frame(iframe)
-            forms = driver.find_elements(By.TAG_NAME, "form")
-            selects = driver.find_elements(By.TAG_NAME, "select")
-            if forms or len(selects) > 2:
-                log.info(f"iframe[{i}]에서 폼 발견! forms={len(forms)} selects={len(selects)}")
-                return True
-            driver.switch_to.default_content()
-        except:
-            driver.switch_to.default_content()
+    for i, table in enumerate(tables):
+        rows = table.find_elements(By.CSS_SELECTOR, "tr")
+        if len(rows) < 2:
             continue
 
-    log.warning("검색 폼 iframe 못 찾음")
-    return False
+        # 헤더 확인
+        header = rows[0].find_elements(By.CSS_SELECTOR, "th, td")
+        header_texts = [h.text.strip() for h in header]
+        log.info(f"테이블[{i}] 헤더: {header_texts}")
 
-
-def crawl_court(driver, court_code, court_name):
-    items = []
-    wait = WebDriverWait(driver, 15)
-
-    try:
-        # 메인 페이지 접속
-        driver.get(f"{BASE_URL}/pgj/index.on")
-        time.sleep(4)
-        driver.switch_to.default_content()
-
-        # "부동산" 버튼 먼저 클릭 (메인 메뉴)
-        try:
-            btn = driver.find_element(By.CSS_SELECTOR, "input[value='부동산']")
-            driver.execute_script("arguments[0].click();", btn)
-            log.info("부동산 버튼 클릭")
-            time.sleep(3)
-        except Exception as e:
-            log.warning(f"부동산 버튼 클릭 실패: {e}")
-
-        # iframe으로 전환
-        switched = switch_to_search_frame(driver)
-
-        if not switched:
-            # iframe 없이 직접 시도
-            driver.switch_to.default_content()
-
-        # 현재 컨텍스트에서 법원 select 찾기
-        selects = driver.find_elements(By.TAG_NAME, "select")
-        log.info(f"현재 컨텍스트 select 수: {len(selects)}")
-
-        for sel_el in selects:
+        # 데이터 행 수집
+        for row in rows[1:]:
             try:
-                name = sel_el.get_attribute("name") or ""
-                sel = Select(sel_el)
-                options_vals = [o.get_attribute("value") for o in sel.options]
-                if court_code in options_vals:
-                    sel.select_by_value(court_code)
-                    log.info(f"법원 선택 성공: {court_name} (select name={name})")
-                    time.sleep(1)
-                    break
+                cols = row.find_elements(By.TAG_NAME, "td")
+                if len(cols) < 4:
+                    continue
+                texts = [c.text.strip() for c in cols]
+                case_no = texts[0]
+                if not case_no or "타경" not in case_no:
+                    continue
+
+                log.info(f"  물건: {texts[:6]}")
+                address = texts[2] if len(texts) > 2 else ""
+                appraisal = parse_price(texts[3]) if len(texts) > 3 else 0
+                min_price = parse_price(texts[4]) if len(texts) > 4 else 0
+                bid_date = texts[5] if len(texts) > 5 else ""
+                discount = round((1 - min_price/appraisal)*100) if appraisal and min_price else 0
+
+                detail_url = ""
+                try:
+                    link = cols[0].find_element(By.TAG_NAME, "a")
+                    detail_url = link.get_attribute("href") or ""
+                except:
+                    pass
+
+                items.append({
+                    "case_no": case_no,
+                    "court": "",
+                    "address": address,
+                    "apt_name": " ".join(address.split()[-2:]) if address else "",
+                    "area": "",
+                    "floor": "",
+                    "direction": "",
+                    "item_type": "아파트",
+                    "appraisal": appraisal,
+                    "min_price": min_price,
+                    "discount": discount,
+                    "bid_date": bid_date,
+                    "status": "진행",
+                    "lat": 35.8714,
+                    "lng": 128.6014,
+                    "documents": [],
+                    "detail_url": detail_url,
+                    "blog_url": ""
+                })
             except:
                 continue
 
-        # "검색하기" 버튼 클릭
-        search_clicked = False
-        search_selectors = [
-            "input[value='검색하기']",
-            "input[value='검색']",
-            "input[value='조회']",
-            "button[type='submit']",
-            "input[type='submit']",
-        ]
-
-        for selector in search_selectors:
-            try:
-                btn = driver.find_element(By.CSS_SELECTOR, selector)
-                driver.execute_script("arguments[0].click();", btn)
-                log.info(f"검색 버튼 클릭 성공: {selector}")
-                search_clicked = True
-                time.sleep(4)
-                break
-            except:
-                continue
-
-        if not search_clicked:
-            # JS로 검색하기 버튼 찾아서 클릭
-            result = driver.execute_script("""
-                var inputs = document.querySelectorAll('input, button');
-                for(var el of inputs) {
-                    var val = (el.value || el.textContent || '').trim();
-                    if(val === '검색하기' || val === '검색' || val === '조회') {
-                        el.click();
-                        return '클릭: ' + val;
-                    }
-                }
-                // 모든 iframe 안도 검색
-                var frames = document.querySelectorAll('iframe');
-                return '버튼없음 (iframe수:' + frames.length + ')';
-            """)
-            log.info(f"JS 검색 결과: {result}")
-            time.sleep(4)
-
-        # 결과 iframe으로 전환해서 테이블 수집
-        driver.switch_to.default_content()
-        iframes = driver.find_elements(By.TAG_NAME, "iframe")
-
-        for iframe in iframes:
-            try:
-                driver.switch_to.frame(iframe)
-                rows = driver.find_elements(By.CSS_SELECTOR, "table tbody tr")
-                if len(rows) > 1:
-                    log.info(f"결과 테이블 발견: {len(rows)}행")
-
-                    for row in rows:
-                        try:
-                            cols = row.find_elements(By.TAG_NAME, "td")
-                            if len(cols) < 5:
-                                continue
-
-                            texts = [c.text.strip() for c in cols]
-                            case_no = texts[0]
-
-                            if not case_no or "타경" not in case_no:
-                                continue
-
-                            log.info(f"물건: {texts[:5]}")
-
-                            address = texts[2] if len(texts) > 2 else ""
-                            appraisal = parse_price(texts[3]) if len(texts) > 3 else 0
-                            min_price = parse_price(texts[4]) if len(texts) > 4 else 0
-                            bid_date = texts[5] if len(texts) > 5 else ""
-                            discount = round((1 - min_price/appraisal)*100) if appraisal and min_price else 0
-
-                            detail_url = ""
-                            try:
-                                link = cols[0].find_element(By.TAG_NAME, "a")
-                                detail_url = link.get_attribute("href") or ""
-                            except:
-                                pass
-
-                            items.append({
-                                "case_no": case_no,
-                                "court": court_name,
-                                "address": address,
-                                "apt_name": " ".join(address.split()[-2:]) if address else "",
-                                "area": "",
-                                "floor": "",
-                                "direction": "",
-                                "item_type": "아파트",
-                                "appraisal": appraisal,
-                                "min_price": min_price,
-                                "discount": discount,
-                                "bid_date": bid_date,
-                                "status": "진행",
-                                "lat": 35.8714,
-                                "lng": 128.6014,
-                                "documents": [],
-                                "detail_url": detail_url,
-                                "blog_url": ""
-                            })
-                        except:
-                            continue
-
-                driver.switch_to.default_content()
-                if items:
-                    break
-            except:
-                driver.switch_to.default_content()
-                continue
-
-    except Exception as e:
-        log.error(f"오류: {e}")
-        driver.switch_to.default_content()
-
-    log.info(f"{court_name}: {len(items)}건 수집")
     return items
 
 
 def run():
     log.info("=" * 50)
-    log.info("대구 법원경매 수집 시작 v5")
+    log.info("대구 법원경매 수집 시작 v6")
     log.info(f"시작: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     log.info("=" * 50)
 
@@ -280,10 +159,116 @@ def run():
     all_items = []
 
     try:
-        for court_code, court_name in DAEGU_COURTS.items():
-            items = crawl_court(driver, court_code, court_name)
-            all_items.extend(items)
-            time.sleep(2)
+        # 메인 페이지 접속
+        driver.get(f"{BASE_URL}/pgj/index.on")
+        time.sleep(4)
+
+        # 부동산 버튼 클릭
+        try:
+            btn = driver.find_element(By.CSS_SELECTOR, "input[value='부동산']")
+            driver.execute_script("arguments[0].click();", btn)
+            log.info("부동산 버튼 클릭")
+            time.sleep(3)
+        except Exception as e:
+            log.warning(f"부동산 버튼 실패: {e}")
+
+        # ── select 전체 분석 (법원 코드 찾기) ──────────
+        selects = driver.find_elements(By.TAG_NAME, "select")
+        log.info(f"select 수: {len(selects)}")
+
+        court_select_el = None
+        for sel_el in selects:
+            try:
+                name = sel_el.get_attribute("name") or sel_el.get_attribute("id") or ""
+                sel = Select(sel_el)
+                options = [(o.get_attribute("value"), o.text.strip()) for o in sel.options]
+                log.info(f"select[{name}]: {options[:5]}")
+
+                # 대구 법원 코드가 있는지 확인
+                vals = [o[0] for o in options]
+                if "B30G0000" in vals or any("대구" in o[1] for o in options):
+                    log.info(f"  ✅ 법원 select 발견! name={name}")
+                    court_select_el = sel_el
+                    break
+            except:
+                continue
+
+        # 대구 전체 선택 (법원 코드 직접 설정)
+        if court_select_el:
+            try:
+                sel = Select(court_select_el)
+                # 대구 관련 옵션 찾기
+                for opt in sel.options:
+                    val = opt.get_attribute("value") or ""
+                    txt = opt.text.strip()
+                    if "대구" in txt or val == "B30G0000":
+                        sel.select_by_value(val)
+                        log.info(f"법원 선택: {txt} ({val})")
+                        time.sleep(1)
+                        break
+            except Exception as e:
+                log.warning(f"법원 선택 실패: {e}")
+        else:
+            # JavaScript로 직접 값 설정 시도
+            result = driver.execute_script("""
+                var selects = document.querySelectorAll('select');
+                var info = [];
+                for(var sel of selects) {
+                    var name = sel.name || sel.id || '';
+                    var opts = Array.from(sel.options).map(o => o.value + ':' + o.text);
+                    info.push(name + ' => ' + opts.slice(0,3).join(', '));
+                    
+                    // 대구 법원 코드 설정 시도
+                    if(opts.some(o => o.includes('B30G') || o.includes('대구'))) {
+                        sel.value = 'B30G0000';
+                        sel.dispatchEvent(new Event('change'));
+                        info.push('대구 선택 시도!');
+                    }
+                }
+                return info;
+            """)
+            log.info(f"JS select 결과: {result}")
+            time.sleep(1)
+
+        # 검색하기 클릭
+        try:
+            btn = driver.find_element(By.CSS_SELECTOR, "input[value='검색하기']")
+            driver.execute_script("arguments[0].click();", btn)
+            log.info("검색하기 클릭!")
+            time.sleep(5)
+        except Exception as e:
+            log.warning(f"검색하기 실패: {e}")
+
+        # 현재 URL 및 페이지 확인
+        log.info(f"검색 후 URL: {driver.current_url}")
+        log.info(f"검색 후 타이틀: {driver.title}")
+
+        # 메인 페이지 결과 수집
+        items = collect_results(driver)
+        log.info(f"메인 페이지 수집: {len(items)}건")
+        all_items.extend(items)
+
+        # 다음 페이지 수집
+        page = 2
+        while page <= 20:
+            try:
+                next_btn = driver.find_element(
+                    By.XPATH,
+                    f"//a[contains(@onclick,'{page}') or text()='{page}']"
+                )
+                driver.execute_script("arguments[0].click();", next_btn)
+                time.sleep(3)
+                new_items = collect_results(driver)
+                if not new_items:
+                    break
+                all_items.extend(new_items)
+                log.info(f"페이지 {page}: {len(new_items)}건")
+                page += 1
+            except:
+                break
+
+    except Exception as e:
+        log.error(f"전체 오류: {e}")
     finally:
         driver.quit()
 
