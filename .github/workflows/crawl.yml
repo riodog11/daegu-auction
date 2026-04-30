@@ -8,6 +8,7 @@ on:
 jobs:
   crawl:
     runs-on: ubuntu-latest
+
     steps:
       - name: 저장소 체크아웃
         uses: actions/checkout@v3
@@ -17,8 +18,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Chrome 설치
+        uses: browser-actions/setup-chrome@v1
+
       - name: 패키지 설치
-        run: pip install requests beautifulsoup4 lxml
+        run: pip install selenium requests beautifulsoup4 lxml webdriver-manager
 
       - name: 경매 데이터 수집
         run: python crawler.py
