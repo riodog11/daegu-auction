@@ -1,27 +1,21 @@
 """
-대구 법원경매 자동 수집기
-============================
-대법원 법원경매정보 사이트(courtauction.go.kr)에서
-대구 지역 경매 물건을 자동으로 수집하고 data.json에 저장합니다.
-
-실행 방법:
-    python crawler.py          # 1회 실행
-    python crawler.py --schedule  # 매일 새벽 3시 자동 실행
-
-필요 패키지 설치:
-    pip install requests beautifulsoup4 lxml schedule
+대구 법원경매 자동 수집기 (Selenium 버전)
+==========================================
+실제 브라우저처럼 동작해서 대법원 경매 사이트에서
+대구 지역 경매 물건을 자동으로 수집합니다.
 """
 
-import requests
-from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support import expected_conditions as EC
 import json
-import os
 import time
 import re
 import logging
 from datetime import datetime
 
-# ── 로그 설정 ─────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -32,263 +26,223 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# ── 설정 ──────────────────────────────────────────────
 BASE_URL = "https://www.courtauction.go.kr"
 DATA_FILE = "data.json"
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8",
-    "Referer": "https://www.courtauction.go.kr/",
-}
-
-# 대구 지역 법원 코드 (대구지방법원 + 산하 지원)
 DAEGU_COURTS = {
-    "B30G0000":  "대구지방법원",
-    "B30B0000":  "대구지방법원 경주지원",
-    "B30C0000":  "대구지방법원 김천지원",
-    "B30D0000":  "대구지방법원 안동지원",
-    "B30E0000":  "대구지방법원 상주지원",
-    "B30F0000":  "대구지방법원 의성지원",
-    "B30H0000":  "대구지방법원 영덕지원",
-    "B30I0000":  "대구지방법원 포항지원",
-}
-
-# 물건 종류 코드
-ITEM_TYPES = {
-    "0001": "아파트",
-    "0002": "다세대(빌라)",
-    "0003": "단독주택",
-    "0004": "상가",
-    "0005": "토지",
-    "0006": "오피스텔",
-    "0007": "기타",
+    "B30G0000": "대구지방법원",
+    "B30B0000": "대구지방법원 경주지원",
+    "B30C0000": "대구지방법원 김천지원",
+    "B30D0000": "대구지방법원 안동지원",
+    "B30E0000": "대구지방법원 상주지원",
+    "B30F0000": "대구지방법원 의성지원",
+    "B30H0000": "대구지방법원 영덕지원",
+    "B30I0000": "대구지방법원 포항지원",
 }
 
 
-class AuctionCrawler:
-    def __init__(self):
-        self.session = requests.Session()
-        self.session.headers.update(HEADERS)
-        self.items = []
+def get_driver():
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option("useAutomationExtension", False)
+    options.add_argument(
+        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    )
+    driver = webdriver.Chrome(options=options)
+    driver.execute_script(
+        "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+    )
+    return driver
 
-    def fetch(self, url, method="GET", data=None, retry=3):
-        """페이지 요청 (재시도 포함)"""
-        for attempt in range(retry):
-            try:
-                if method == "POST":
-                    res = self.session.post(url, data=data, timeout=15)
-                else:
-                    res = self.session.get(url, timeout=15)
 
-                res.encoding = "utf-8"
-                if res.status_code == 200:
-                    return res.text
-                log.warning(f"HTTP {res.status_code} - {url}")
+def parse_price(text):
+    if not text:
+        return 0
+    text = text.replace(",", "").replace(" ", "").strip()
+    total = 0
+    if "억" in text:
+        parts = text.split("억")
+        total = int(re.sub(r"[^0-9]", "", parts[0]) or 0) * 10000
+        if len(parts) > 1 and parts[1]:
+            나머지 = re.sub(r"[^0-9]", "", parts[1].split("만")[0])
+            total += int(나머지 or 0)
+    elif "만" in text:
+        total = int(re.sub(r"[^0-9]", "", text.split("만")[0]) or 0)
+    else:
+        nums = re.sub(r"[^0-9]", "", text)
+        if nums:
+            val = int(nums)
+            total = val // 10000 if val > 10000 else val
+    return total
 
-            except requests.exceptions.Timeout:
-                log.warning(f"Timeout (시도 {attempt+1}/{retry}) - {url}")
-            except requests.exceptions.RequestException as e:
-                log.warning(f"요청 오류 (시도 {attempt+1}/{retry}): {e}")
 
-            time.sleep(2 * (attempt + 1))  # 재시도 간격 점진적 증가
+def crawl_list(driver):
+    """대구 전체 경매 목록 수집"""
+    items = []
+    wait = WebDriverWait(driver, 20)
 
-        log.error(f"모든 재시도 실패: {url}")
-        return None
+    try:
+        # 물건검색 페이지 직접 접속
+        driver.get(f"{BASE_URL}/pgj/index.on")
+        time.sleep(3)
 
-    # ── 목록 수집 ──────────────────────────────────────
-    def get_list(self, court_code, court_name, page=1):
-        """법원별 경매 목록 수집"""
-        url = f"{BASE_URL}/pgj/index.on"
-        data = {
-            "w2xPath": "/pgj/ui/pgj100/PGJ151F00.xml",
-            "courtCode": court_code,
-            "searchType": "A",          # 전체
-            "itemCode": "0001",         # 아파트 (필요시 반복)
-            "pageNo": str(page),
-            "pageSize": "20",
-        }
+        # 페이지 소스 확인
+        page_source = driver.page_source
+        log.info(f"페이지 로드 완료 (길이: {len(page_source)})")
 
-        html = self.fetch(url, method="POST", data=data)
-        if not html:
-            return [], False
-
-        soup = BeautifulSoup(html, "lxml")
-        rows = soup.select("table.tbl_list tbody tr")
-
-        items = []
-        for row in rows:
-            cols = row.select("td")
-            if len(cols) < 8:
-                continue
-
-            try:
-                case_no = cols[0].get_text(strip=True)
-                address = cols[2].get_text(strip=True)
-                appraisal = cols[3].get_text(strip=True)
-                min_price = cols[4].get_text(strip=True)
-                bid_date = cols[5].get_text(strip=True)
-                status = cols[6].get_text(strip=True)
-
-                # 상세 페이지 링크
-                link_tag = cols[0].find("a")
-                detail_url = ""
-                if link_tag and link_tag.get("href"):
-                    detail_url = BASE_URL + link_tag["href"]
-
-                items.append({
-                    "case_no": case_no,
-                    "court": court_name,
-                    "address": address,
-                    "appraisal_raw": appraisal,
-                    "min_price_raw": min_price,
-                    "bid_date": bid_date,
-                    "status": status,
-                    "detail_url": detail_url,
-                })
-
-            except Exception as e:
-                log.debug(f"행 파싱 오류: {e}")
-                continue
-
-        # 다음 페이지 여부
-        has_next = bool(soup.select_one("a.next_page"))
-        return items, has_next
-
-    # ── 상세 정보 수집 ─────────────────────────────────
-    def get_detail(self, item):
-        """상세 페이지에서 추가 정보 수집"""
-        if not item.get("detail_url"):
-            return item
-
-        html = self.fetch(item["detail_url"])
-        if not html:
-            return item
-
-        soup = BeautifulSoup(html, "lxml")
-
-        # 기본 정보 테이블 파싱
-        detail = {}
-        for row in soup.select("table.tbl_view tr"):
-            th = row.find("th")
-            td = row.find("td")
-            if th and td:
-                key = th.get_text(strip=True)
-                val = td.get_text(strip=True)
-                detail[key] = val
-
-        # 필요 정보 추출
-        item["apt_name"]   = detail.get("물건명칭", "")
-        item["area"]       = detail.get("면적", detail.get("전용면적", ""))
-        item["floor"]      = detail.get("층", "")
-        item["direction"]  = detail.get("방향", "")
-        item["item_type"]  = detail.get("물건종류", "")
-        item["case_status"]= detail.get("사건상태", "")
-
-        # 가격 정리 (숫자만 추출)
-        item["appraisal"]  = self._parse_price(item.get("appraisal_raw", ""))
-        item["min_price"]  = self._parse_price(item.get("min_price_raw", ""))
-
-        # 할인율 계산
-        if item["appraisal"] and item["min_price"]:
-            discount = round((1 - item["min_price"] / item["appraisal"]) * 100)
-            item["discount"] = discount
-        else:
-            item["discount"] = 0
-
-        # PDF 문서 링크 수집
-        item["documents"] = self._get_documents(soup)
-
-        time.sleep(0.5)  # 서버 부하 방지
-        return item
-
-    def _get_documents(self, soup):
-        """PDF 문서 링크 추출"""
-        docs = []
-        for link in soup.select("a[href*='.pdf'], a[onclick*='pdf'], a[onclick*='PDF']"):
-            name = link.get_text(strip=True)
-            href = link.get("href", "") or link.get("onclick", "")
-            if name and href:
-                docs.append({"name": name, "url": href})
-        return docs
-
-    def _parse_price(self, text):
-        """가격 텍스트에서 숫자(만원) 추출"""
-        if not text:
-            return 0
-        # 억/만 단위 처리
-        text = text.replace(",", "").replace(" ", "")
-        total = 0
-        if "억" in text:
-            parts = text.split("억")
-            total += int(re.sub(r"[^0-9]", "", parts[0]) or 0) * 10000
-            if len(parts) > 1 and parts[1]:
-                total += int(re.sub(r"[^0-9]", "", parts[1]) or 0)
-        elif "만" in text:
-            total = int(re.sub(r"[^0-9]", "", text.split("만")[0]) or 0)
-        else:
-            nums = re.sub(r"[^0-9]", "", text)
-            total = int(nums) // 10000 if nums else 0
-        return total
-
-    # ── 메인 수집 ──────────────────────────────────────
-    def run(self):
-        log.info("=" * 50)
-        log.info("대구 법원경매 수집 시작")
-        log.info(f"시작 시간: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        log.info("=" * 50)
-
-        all_items = []
+        # 법원 드롭다운 찾기
+        selects = driver.find_elements(By.TAG_NAME, "select")
+        log.info(f"select 요소 {len(selects)}개 발견")
 
         for court_code, court_name in DAEGU_COURTS.items():
             log.info(f"\n📍 {court_name} 수집 중...")
-            page = 1
+            try:
+                # 법원 선택
+                for sel in selects:
+                    try:
+                        s = Select(sel)
+                        options = [o.get_attribute("value") for o in s.options]
+                        if court_code in options:
+                            s.select_by_value(court_code)
+                            time.sleep(1)
+                            log.info(f"  법원 선택 완료: {court_name}")
+                            break
+                    except:
+                        continue
 
-            while True:
-                items, has_next = self.get_list(court_code, court_name, page)
-                log.info(f"  페이지 {page}: {len(items)}건 수집")
+                # 검색 실행
+                try:
+                    btn = driver.find_element(
+                        By.CSS_SELECTOR,
+                        "input[type='button'][value='검색'], "
+                        "input[type='submit'], "
+                        "button.btn_search, "
+                        "a.btn_search"
+                    )
+                    btn.click()
+                    time.sleep(3)
+                except Exception as e:
+                    log.warning(f"  검색 버튼 오류: {e}")
+                    continue
 
-                # 상세 정보 수집
-                for i, item in enumerate(items):
-                    log.debug(f"  상세 {i+1}/{len(items)}: {item['case_no']}")
-                    detailed = self.get_detail(item)
-                    all_items.append(detailed)
-                    time.sleep(0.3)  # 서버 부하 방지
+                # 결과 수집
+                page = 1
+                while True:
+                    rows = driver.find_elements(
+                        By.CSS_SELECTOR,
+                        "table tbody tr"
+                    )
+                    log.info(f"  페이지 {page}: {len(rows)}건")
 
-                if not has_next:
-                    break
-                page += 1
-                time.sleep(1)
+                    for row in rows:
+                        try:
+                            cols = row.find_elements(By.TAG_NAME, "td")
+                            if len(cols) < 5:
+                                continue
 
-        log.info(f"\n✅ 총 {len(all_items)}건 수집 완료")
-        self.save(all_items)
+                            case_no = cols[0].text.strip()
+                            if not case_no or "타경" not in case_no:
+                                continue
 
-    def save(self, items):
-        """data.json으로 저장"""
-        output = {
-            "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "total": len(items),
-            "items": items
-        }
-        with open(DATA_FILE, "w", encoding="utf-8") as f:
-            json.dump(output, f, ensure_ascii=False, indent=2)
-        log.info(f"💾 data.json 저장 완료 ({len(items)}건)")
+                            address = cols[2].text.strip() if len(cols) > 2 else ""
+                            appraisal = parse_price(cols[3].text if len(cols) > 3 else "")
+                            min_price = parse_price(cols[4].text if len(cols) > 4 else "")
+                            bid_date = cols[5].text.strip() if len(cols) > 5 else ""
+                            discount = round((1 - min_price / appraisal) * 100) if appraisal and min_price else 0
+
+                            detail_url = ""
+                            try:
+                                link = cols[0].find_element(By.TAG_NAME, "a")
+                                detail_url = link.get_attribute("href") or ""
+                            except:
+                                pass
+
+                            items.append({
+                                "case_no": case_no,
+                                "court": court_name,
+                                "address": address,
+                                "apt_name": address.split()[-2] if address else "",
+                                "area": "",
+                                "floor": "",
+                                "direction": "",
+                                "item_type": "아파트",
+                                "appraisal": appraisal,
+                                "min_price": min_price,
+                                "discount": discount,
+                                "bid_date": bid_date,
+                                "status": "진행",
+                                "lat": 35.8714,
+                                "lng": 128.6014,
+                                "documents": [],
+                                "detail_url": detail_url,
+                                "blog_url": ""
+                            })
+                        except:
+                            continue
+
+                    # 다음 페이지
+                    try:
+                        next_btn = driver.find_element(
+                            By.CSS_SELECTOR, "a.next, .paging a:last-child"
+                        )
+                        if "disabled" not in next_btn.get_attribute("class"):
+                            next_btn.click()
+                            time.sleep(2)
+                            page += 1
+                        else:
+                            break
+                    except:
+                        break
+
+            except Exception as e:
+                log.error(f"  {court_name} 오류: {e}")
+                continue
+
+    except Exception as e:
+        log.error(f"크롤링 오류: {e}")
+
+    return items
 
 
-# ── 실행 ──────────────────────────────────────────────
+def run():
+    log.info("=" * 50)
+    log.info("대구 법원경매 수집 시작 (Selenium)")
+    log.info(f"시작 시간: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    log.info("=" * 50)
+
+    driver = get_driver()
+    all_items = []
+
+    try:
+        all_items = crawl_list(driver)
+    finally:
+        driver.quit()
+
+    log.info(f"\n✅ 총 {len(all_items)}건 수집 완료")
+
+    if len(all_items) == 0:
+        log.warning("수집된 데이터가 없어 기존 data.json 유지")
+        return
+
+    output = {
+        "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "total": len(all_items),
+        "items": all_items
+    }
+
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(output, f, ensure_ascii=False, indent=2)
+
+    log.info(f"💾 data.json 저장 완료 ({len(all_items)}건)")
+
+
 if __name__ == "__main__":
-    import sys
-
-    crawler = AuctionCrawler()
-
-    if "--schedule" in sys.argv:
-        import schedule
-        log.info("⏰ 스케줄러 시작 — 매일 새벽 3시에 자동 수집")
-        schedule.every().day.at("03:00").do(crawler.run)
-        crawler.run()  # 시작 시 1회 즉시 실행
-        while True:
-            schedule.run_pending()
-            time.sleep(60)
-    else:
-        crawler.run()
+    run()
