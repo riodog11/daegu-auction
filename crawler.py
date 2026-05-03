@@ -1,8 +1,8 @@
 """
-대구 법원경매 자동 수집기 v11
+대구 법원경매 자동 수집기 v13
 =====================================
-- 10페이지 묶음 이후 다음 묶음 버튼 처리
-- 페이징 구조 상세 분석
+- 대구지방법원 + 대구서부지원 둘 다 수집
+- 누적 저장 방식 (기존 데이터 유지하면서 신규 추가)
 """
 
 from selenium import webdriver
@@ -10,7 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoAlertPresentException
-import json, time, re, logging
+import json, time, re, logging, os
 from datetime import datetime
 
 logging.basicConfig(
@@ -25,6 +25,9 @@ log = logging.getLogger(__name__)
 
 BASE_URL = "https://www.courtauction.go.kr"
 DATA_FILE = "data.json"
+
+# 대구 법원 목록
+DAEGU_COURTS = ["대구지방법원", "대구서부지원", "대구지방법원 서부지원"]
 
 
 def get_driver():
@@ -80,24 +83,47 @@ def parse_price(text):
     return total
 
 
-def set_daegu_filter(driver):
-    driver.execute_script("""
+def setup_filters(driver, court_name=None):
+    """대구 + 특정 법원 필터 설정"""
+    result = driver.execute_script("""
+        var courtName = arguments[0];
         var selects = document.querySelectorAll('select');
+        var info = [];
+
         for(var sel of selects) {
-            var opts = Array.from(sel.options);
-            for(var opt of opts) {
-                if(opt.text.includes('대구') || opt.value.includes('대구')) {
-                    sel.value = opt.value;
+            var name = sel.name || sel.id || '';
+            var opts = Array.from(sel.options).map(o => ({v: o.value, t: o.text.trim()}));
+
+            // 시/도 → 대구광역시
+            var hasSido = opts.some(o => o.t.includes('부산') || o.t.includes('인천') || o.t.includes('광주'));
+            if(hasSido) {
+                var daeguOpt = opts.find(o => o.t.includes('대구'));
+                if(daeguOpt) {
+                    sel.value = daeguOpt.v;
                     sel.dispatchEvent(new Event('change', {bubbles: true}));
-                    break;
+                    info.push('✅ 시/도: ' + daeguOpt.t + ' (' + name + ')');
+                }
+            }
+
+            // 법원 → 특정 법원 선택
+            if(courtName) {
+                var courtOpt = opts.find(o => o.t.includes(courtName));
+                if(courtOpt && name.includes('Cort')) {
+                    sel.value = courtOpt.v;
+                    sel.dispatchEvent(new Event('change', {bubbles: true}));
+                    info.push('✅ 법원: ' + courtOpt.t + ' (' + name + ')');
                 }
             }
         }
-    """)
+        return info;
+    """, court_name)
+
+    for line in (result or []):
+        log.info(f"  {line}")
     time.sleep(1)
 
 
-def collect_page(driver):
+def collect_page(driver, court_name):
     items = []
     dismiss_alert(driver)
     tables = driver.find_elements(By.CSS_SELECTOR, "table")
@@ -119,7 +145,7 @@ def collect_page(driver):
                 min_price = parse_price(texts[4]) if len(texts) > 4 else 0
                 bid_date = texts[5] if len(texts) > 5 else ""
                 discount = round((1 - min_price/appraisal)*100) if appraisal and min_price else 0
-                court = texts[1] if len(texts) > 1 else ""
+                court = texts[1] if len(texts) > 1 else court_name
                 detail_url = ""
                 try:
                     link = cols[0].find_element(By.TAG_NAME, "a")
@@ -127,61 +153,29 @@ def collect_page(driver):
                 except:
                     pass
                 items.append({
-                    "case_no": case_no, "court": court, "address": address,
+                    "case_no": case_no,
+                    "court": court or court_name,
+                    "address": address,
                     "apt_name": " ".join(address.split()[-2:]) if address else "",
-                    "area": "", "floor": "", "direction": "", "item_type": "아파트",
-                    "appraisal": appraisal, "min_price": min_price, "discount": discount,
-                    "bid_date": bid_date, "status": "진행",
+                    "area": "", "floor": "", "direction": "",
+                    "item_type": "아파트",
+                    "appraisal": appraisal,
+                    "min_price": min_price,
+                    "discount": discount,
+                    "bid_date": bid_date,
+                    "status": "진행",
                     "lat": 35.8714, "lng": 128.6014,
-                    "documents": [], "detail_url": detail_url, "blog_url": ""
+                    "documents": [],
+                    "detail_url": detail_url,
+                    "blog_url": "",
+                    "collected_at": datetime.now().strftime("%Y-%m-%d")
                 })
             except:
                 continue
     return items
 
 
-def analyze_paging(driver, page):
-    """현재 페이지 페이징 구조 분석"""
-    result = driver.execute_script("""
-        var paging = [];
-        
-        // 모든 a 태그 중 페이지 관련
-        var links = document.querySelectorAll('a');
-        for(var link of links) {
-            var txt = (link.textContent || '').trim();
-            var onclick = link.getAttribute('onclick') || '';
-            var href = link.getAttribute('href') || '';
-            // 숫자이거나 다음/이전 관련
-            if(/^\\d+$/.test(txt) || txt.includes('다음') || txt.includes('이전') || 
-               txt.includes('>') || txt.includes('<') || onclick.includes('page') ||
-               onclick.includes('Page') || onclick.includes('go')) {
-                paging.push({txt: txt, onclick: onclick.slice(0,80), href: href.slice(0,50)});
-            }
-        }
-        
-        // img 태그 (다음 버튼이 이미지일 수 있음)
-        var imgs = document.querySelectorAll('img');
-        for(var img of imgs) {
-            var alt = img.getAttribute('alt') || '';
-            var src = img.getAttribute('src') || '';
-            if(alt.includes('다음') || alt.includes('next') || src.includes('next') || src.includes('btn_next')) {
-                var parent = img.parentElement;
-                var parentOnclick = (parent && parent.getAttribute('onclick')) || '';
-                paging.push({txt: 'IMG:'+alt, onclick: parentOnclick.slice(0,80), src: src.slice(0,50)});
-            }
-        }
-        
-        return paging;
-    """)
-    log.info(f"페이지 {page} 페이징 구조:")
-    for p in (result or []):
-        log.info(f"  {p}")
-    return result or []
-
-
 def go_next_page(driver, current_page):
-    """다음 페이지로 이동"""
-
     # 방법 1: 다음 페이지 번호 클릭
     try:
         next_num = driver.find_element(
@@ -194,161 +188,181 @@ def go_next_page(driver, current_page):
     except:
         pass
 
-    # 방법 2: 다음 묶음 버튼 (이미지 포함)
-    next_selectors = [
-        "a[title='다음페이지']", "a[title='다음']",
-        "a.next", ".next a", "#next",
-        "img[alt='다음']", "img[alt='next']",
-        "img[src*='next']", "img[src*='btn_next']",
-        "a[onclick*='next']", "a[onclick*='Next']",
-    ]
-    for selector in next_selectors:
+    # 방법 2: '다음 목록' 버튼 (10페이지 묶음 이후 핵심!)
+    for selector in [
+        "button.w2pageList_col_next",
+        "button[title='다음 목록']",
+        ".w2pageList_col_next",
+        "a[title='다음페이지']",
+        "a.next",
+        "a[title='다음']",
+    ]:
         try:
-            el = driver.find_element(By.CSS_SELECTOR, selector)
-            # 부모 클릭 (img의 경우)
-            target = el if el.tag_name == 'a' else el.find_element(By.XPATH, "..")
-            driver.execute_script("arguments[0].click();", target)
-            time.sleep(3)
-            dismiss_alert(driver)
-            return True
+            btn = driver.find_element(By.CSS_SELECTOR, selector)
+            if btn.is_displayed() and btn.is_enabled():
+                driver.execute_script("arguments[0].click();", btn)
+                time.sleep(3)
+                dismiss_alert(driver)
+                return True
         except:
             continue
-
-    # 방법 3: onclick에서 페이지 함수 추출 후 호출
-    result = driver.execute_script(f"""
-        var links = document.querySelectorAll('a');
-        for(var link of links) {{
-            var txt = (link.textContent || link.getAttribute('title') || '').trim();
-            var onclick = link.getAttribute('onclick') || '';
-            // 다음 페이지 관련 링크 찾기
-            if(txt.includes('다음') || txt === '>' || txt === '>>' ||
-               onclick.includes('nextPage') || onclick.includes('next_page')) {{
-                link.click();
-                return '클릭: ' + txt + ' / ' + onclick.slice(0,50);
-            }}
-        }}
-        
-        // 숫자 페이지 중 현재+1 페이지 onclick 찾기
-        for(var link of links) {{
-            var onclick = link.getAttribute('onclick') || '';
-            if(onclick.includes('{current_page + 1}')) {{
-                link.click();
-                return '숫자클릭: ' + onclick.slice(0,50);
-            }}
-        }}
-        
-        return null;
-    """)
-
-    if result:
-        log.info(f"JS 클릭: {result}")
-        time.sleep(3)
-        dismiss_alert(driver)
-        return True
-
     return False
+
+
+
+def crawl_court(driver, court_name, page_type="PGJ151F00"):
+    """특정 법원 전체 수집
+    page_type: PGJ151F00=물건상세검색(2주치), PGJ157M00=매각예정물건(6주치)
+    """
+    log.info(f"법원: {court_name} / 유형: {page_type}")
+
+    all_items = []
+
+    # 페이지 접속
+    url = f"{BASE_URL}/pgj/index.on?w2xPath=/pgj/ui/pgj100/{page_type}.xml"
+    driver.get(url)
+    time.sleep(5)
+    dismiss_alert(driver)
+    log.info(f"접속 완료")
+
+    # 필터 설정
+    setup_filters(driver, court_name)
+
+    # 검색
+    try:
+        btn = driver.find_element(By.CSS_SELECTOR, "input[value='검색하기']")
+        driver.execute_script("arguments[0].click();", btn)
+        log.info("검색 실행!")
+        time.sleep(5)
+        dismiss_alert(driver)
+    except Exception as e:
+        log.warning(f"검색 실패: {e}")
+
+    # 페이지 수집
+    page = 1
+    prev_case_nos = set()
+
+    while page <= 200:
+        items = collect_page(driver, court_name)
+        log.info(f"  페이지 {page}: {len(items)}건")
+
+        if not items:
+            break
+
+        current_case_nos = {item["case_no"] for item in items}
+        if current_case_nos == prev_case_nos:
+            log.info("  중복 페이지 — 종료")
+            break
+        prev_case_nos = current_case_nos
+        all_items.extend(items)
+
+        if not go_next_page(driver, page):
+            break
+        page += 1
+
+    log.info(f"{court_name} 수집 완료: {len(all_items)}건")
+    return all_items
+
+
+def load_existing_data():
+    """기존 data.json 불러오기"""
+    if not os.path.exists(DATA_FILE):
+        return {}
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        existing = {item["case_no"]: item for item in data.get("items", [])}
+        log.info(f"기존 데이터 로드: {len(existing)}건")
+        return existing
+    except:
+        return {}
+
+
+def merge_data(existing, new_items):
+    """기존 데이터에 신규 데이터 병합 (누적)"""
+    added = 0
+    updated = 0
+
+    for item in new_items:
+        case_no = item["case_no"]
+        if case_no not in existing:
+            existing[case_no] = item
+            added += 1
+        else:
+            # 기존 데이터 업데이트 (blog_url 유지)
+            blog_url = existing[case_no].get("blog_url", "")
+            existing[case_no] = item
+            existing[case_no]["blog_url"] = blog_url
+            updated += 1
+
+    log.info(f"병합 결과: 신규 {added}건 추가 / {updated}건 업데이트")
+    return existing
 
 
 def run():
     log.info("=" * 50)
-    log.info("대구 법원경매 수집 시작 v11")
+    log.info("대구 법원경매 수집 시작 v13 (누적 저장)")
     log.info(f"시작: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     log.info("=" * 50)
 
+    # 기존 데이터 로드
+    existing_data = load_existing_data()
+
     driver = get_driver()
-    all_items = []
+    new_items = []
 
     try:
-        driver.get(f"{BASE_URL}/pgj/index.on")
-        time.sleep(5)
-        dismiss_alert(driver)
+        # ── 1. 물건상세검색 (오늘 ~ 2주치) ──────────────
+        log.info("\n[1단계] 물건상세검색 수집 시작")
+        items1 = crawl_court(driver, "대구지방법원", "PGJ151F00")
+        new_items.extend(items1)
+        items2 = crawl_court(driver, "대구서부지원", "PGJ151F00")
+        new_items.extend(items2)
+        log.info(f"물건상세검색 소계: {len(new_items)}건")
 
-        # 부동산 버튼
-        try:
-            btn = driver.find_element(By.CSS_SELECTOR, "input[value='부동산']")
-            driver.execute_script("arguments[0].click();", btn)
-            log.info("부동산 클릭")
-            time.sleep(5)
-            dismiss_alert(driver)
-        except Exception as e:
-            log.warning(f"부동산 버튼 실패: {e}")
-            dismiss_alert(driver)
+        # ── 2. 매각예정물건 (2주 후 ~ 6주치) ────────────
+        log.info("\n[2단계] 매각예정물건 수집 시작")
+        items3 = crawl_court(driver, "대구지방법원", "PGJ157M00")
+        new_items.extend(items3)
+        items4 = crawl_court(driver, "대구서부지원", "PGJ157M00")
+        new_items.extend(items4)
+        log.info(f"매각예정물건 소계: {len(items3) + len(items4)}건")
 
-        # 대구 필터
-        set_daegu_filter(driver)
-
-        # 검색
-        try:
-            btn = driver.find_element(By.CSS_SELECTOR, "input[value='검색하기']")
-            driver.execute_script("arguments[0].click();", btn)
-            log.info("검색하기 클릭!")
-            time.sleep(5)
-            dismiss_alert(driver)
-        except Exception as e:
-            log.warning(f"검색 실패: {e}")
-
-        log.info(f"URL: {driver.current_url}")
-
-        # 페이지 수집
-        page = 1
-        prev_case_nos = set()
-
-        while page <= 200:
-            items = collect_page(driver)
-            log.info(f"페이지 {page}: {len(items)}건")
-
-            if not items:
-                # 페이징 분석 후 종료
-                analyze_paging(driver, page)
-                break
-
-            # 중복 체크 (같은 페이지 반복 방지)
-            current_case_nos = {item["case_no"] for item in items}
-            if current_case_nos == prev_case_nos:
-                log.info("중복 페이지 감지 — 수집 완료")
-                break
-            prev_case_nos = current_case_nos
-
-            all_items.extend(items)
-
-            # 10페이지마다 페이징 구조 분석
-            if page % 10 == 0:
-                log.info(f"=== {page}페이지 페이징 구조 분석 ===")
-                analyze_paging(driver, page)
-
-            # 다음 페이지
-            if not go_next_page(driver, page):
-                log.info(f"다음 페이지 없음 ({page}페이지 종료)")
-                # 마지막 페이지에서 페이징 분석
-                analyze_paging(driver, page)
-                break
-
-            page += 1
-
-        # 대구 필터
-        daegu = [i for i in all_items if "대구" in i.get("address","") or "대구" in i.get("court","")]
-        log.info(f"전체: {len(all_items)}건 / 대구: {len(daegu)}건")
-        final = daegu if daegu else all_items
+        log.info(f"\n오늘 전체 수집: {len(new_items)}건")
 
     except Exception as e:
         log.error(f"오류: {e}")
-        final = all_items
     finally:
         driver.quit()
 
-    log.info(f"✅ 총 {len(final)}건")
+    # 대구 물건 필터
+    daegu_items = [
+        i for i in new_items
+        if "대구" in i.get("address", "") or "대구" in i.get("court", "")
+    ]
+    log.info(f"대구 필터: {len(daegu_items)}건")
 
-    if not final:
-        log.warning("데이터 없음 — 기존 유지")
+    if not daegu_items and not existing_data:
+        log.warning("수집 데이터 없음")
         return
+
+    # 누적 병합
+    merged = merge_data(existing_data, daegu_items or new_items)
+    final_items = list(merged.values())
+
+    # 입찰일 기준 정렬 (가까운 순)
+    final_items.sort(key=lambda x: x.get("bid_date", "9999"))
+
+    log.info(f"✅ 최종 저장: {len(final_items)}건 (누적)")
 
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump({
             "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "total": len(final),
-            "items": final
+            "total": len(final_items),
+            "items": final_items
         }, f, ensure_ascii=False, indent=2)
-    log.info(f"💾 저장 완료 ({len(final)}건)")
+
+    log.info(f"💾 저장 완료 ({len(final_items)}건)")
 
 
 if __name__ == "__main__":
