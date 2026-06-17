@@ -231,11 +231,28 @@ def crawl_court(driver, court_name, page_type="PGJ151F00"):
 
     # 검색
     try:
-        btn = driver.find_element(By.CSS_SELECTOR, "input[value='검색하기']")
-        driver.execute_script("arguments[0].click();", btn)
-        log.info("검색 실행!")
-        time.sleep(5)
-        dismiss_alert(driver)
+        btn = None
+        for selector in [
+            "#mf_wfm_mainFrame_btn_gdsDtlSrch",
+            "input.bt_sch",
+            "input[value='검색']",
+            "input[title*='검색 버튼']",
+        ]:
+            try:
+                cand = driver.find_element(By.CSS_SELECTOR, selector)
+                if cand.is_displayed():
+                    btn = cand
+                    log.info(f"검색 버튼 찾음: {selector}")
+                    break
+            except:
+                continue
+        if btn:
+            driver.execute_script("arguments[0].click();", btn)
+            log.info("검색 실행!")
+            time.sleep(5)
+            dismiss_alert(driver)
+        else:
+            log.warning("검색 버튼을 못 찾음")
     except Exception as e:
         log.warning(f"검색 실패: {e}")
 
