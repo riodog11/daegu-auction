@@ -123,6 +123,17 @@ def setup_filters(driver, court_name=None):
     time.sleep(1)
 
 
+# 아파트 단지명 추정 키워드 (집합건물 중 아파트만 거르기 위한 것)
+APT_KEYWORDS = [
+    "아파트", "캐슬", "자이", "푸르지오", "힐스테이트", "코아", "코오롱",
+    "롯데캐슬", "e편한세상", "이편한세상", "더샵", "데시앙", "센트럴",
+    "엘크루", "트루엘", "리슈빌", "해모로", "한신", "우방", "태왕",
+    "협성", "화성파크드림", "효성", "동화", "보성", "삼정", "서한",
+    "타운", "맨션", "팰리스", "팰리체", "아이파크", "스위첸", "베르디움",
+    "휴먼시아", "뜨란채", "주공", "엘리시아", "센트레빌", "라온프라이빗",
+]
+
+
 def collect_page(driver, court_name):
     items = []
     dismiss_alert(driver)
@@ -140,29 +151,71 @@ def collect_page(driver, court_name):
                 case_no = texts[0]
                 if not case_no or "타경" not in case_no:
                     continue
-                log.info(f"칼럼 확인: {texts}")
-                address = texts[2] if len(texts) > 2 else ""
-                appraisal = parse_price(texts[3]) if len(texts) > 3 else 0
-                min_price = parse_price(texts[4]) if len(texts) > 4 else 0
-                bid_date = texts[5] if len(texts) > 5 else ""
-                discount = round((1 - min_price/appraisal)*100) if appraisal and min_price else 0
-                court = texts[1] if len(texts) > 1 else court_name
+
+                # ── 칼럼 매핑 (실제 구조 기준) ──
+                # [3] 주소 + 물건내역, [6] 감정가, [7] 경매계+날짜
+                raw_addr = texts[3] if len(texts) > 3 else ""
+                appraisal = parse_price(texts[6]) if len(texts) > 6 else 0
+                bid_info = texts[7] if len(texts) > 7 else ""
+
+                # 주소와 물건내역 분리 (줄바꿈 또는 [ 기준)
+                address = raw_addr
+                detail_text = ""
+                if "[" in raw_addr:
+                    parts = raw_addr.split("[", 1)
+                    address = parts[0].strip()
+                    detail_text = "[" + parts[1]
+                elif "\n" in raw_addr:
+                    parts = raw_addr.split("\n", 1)
+                    address = parts[0].strip()
+                    detail_text = parts[1]
+
+                # 용도 판별: 물건내역에 "집합건물"이 있어야 아파트류
+                is_jiphap = "집합건물" in detail_text or "집합건물" in raw_addr
+
+                # 면적 추출 (예: 84.78㎡)
+                area = ""
+                m = re.search(r'([\d,]+\.?\d*)\s*㎡', detail_text)
+                if m:
+                    area = m.group(1)
+
+                # 입찰일과 경매계 분리
+                bid_date = ""
+                court_dept = ""
+                if bid_info:
+                    bid_parts = bid_info.split("\n")
+                    court_dept = bid_parts[0].strip() if bid_parts else ""
+                    dm = re.search(r'(\d{4}[.\-]\d{2}[.\-]\d{2})', bid_info)
+                    if dm:
+                        bid_date = dm.group(1).replace("-", ".")
+
+                # ── 아파트 필터 ──
+                # 1차: 집합건물이 아니면 제외 (토지/공장 등)
+                if not is_jiphap:
+                    continue
+                # 2차: 주소에 아파트 단지명 키워드가 있어야 통과
+                if not any(kw in address for kw in APT_KEYWORDS):
+                    continue
+
+                court = court_name
+
                 detail_url = ""
                 try:
                     link = cols[0].find_element(By.TAG_NAME, "a")
                     detail_url = link.get_attribute("href") or ""
                 except:
                     pass
+
                 items.append({
                     "case_no": case_no,
                     "court": court or court_name,
                     "address": address,
                     "apt_name": " ".join(address.split()[-2:]) if address else "",
-                    "area": "", "floor": "", "direction": "",
+                    "area": area, "floor": "", "direction": "",
                     "item_type": "아파트",
                     "appraisal": appraisal,
-                    "min_price": min_price,
-                    "discount": discount,
+                    "min_price": 0,
+                    "discount": 0,
                     "bid_date": bid_date,
                     "status": "진행",
                     "lat": 35.8714, "lng": 128.6014,
