@@ -140,6 +140,7 @@ def collect_page(driver, court_name):
                 case_no = texts[0]
                 if not case_no or "타경" not in case_no:
                     continue
+                log.info(f"칼럼 확인: {texts}")
                 address = texts[2] if len(texts) > 2 else ""
                 appraisal = parse_price(texts[3]) if len(texts) > 3 else 0
                 min_price = parse_price(texts[4]) if len(texts) > 4 else 0
