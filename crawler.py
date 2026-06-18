@@ -27,7 +27,10 @@ BASE_URL = "https://www.courtauction.go.kr"
 DATA_FILE = "data.json"
 
 # 대구 법원 목록
-DAEGU_COURTS = ["대구지방법원", "대구서부지원", "대구지방법원 서부지원"]
+DAEGU_COURTS = [
+    "대구지방법원", "대구서부지원", "안동지원", "경주지원",
+    "김천지원", "상주지원", "의성지원", "영덕지원", "포항지원",
+]
 
 
 def get_driver():
@@ -372,32 +375,31 @@ def merge_data(existing, new_items):
 
 def run():
     log.info("=" * 50)
-    log.info("대구 법원경매 수집 시작 v13 (누적 저장)")
+    log.info("대구·경북 법원경매 수집 시작 v14 (누적 저장)")
     log.info(f"시작: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     log.info("=" * 50)
 
-    # 기존 데이터 로드
     existing_data = load_existing_data()
-
     driver = get_driver()
     new_items = []
 
     try:
-        # ── 1. 물건상세검색 (오늘 ~ 2주치) ──────────────
+        # ── 1. 물건상세검색 (오늘 ~ 2주치) ──
         log.info("\n[1단계] 물건상세검색 수집 시작")
-        items1 = crawl_court(driver, "대구지방법원", "PGJ151F00")
-        new_items.extend(items1)
-        items2 = crawl_court(driver, "대구서부지원", "PGJ151F00")
-        new_items.extend(items2)
+        for court in DAEGU_COURTS:
+            items = crawl_court(driver, court, "PGJ151F00")
+            log.info(f"  → {court} 물건상세검색: {len(items)}건")
+            new_items.extend(items)
         log.info(f"물건상세검색 소계: {len(new_items)}건")
 
-        # ── 2. 매각예정물건 (2주 후 ~ 6주치) ────────────
+        # ── 2. 매각예정물건 (2주 후 ~ 6주치) ──
         log.info("\n[2단계] 매각예정물건 수집 시작")
-        items3 = crawl_court(driver, "대구지방법원", "PGJ157M00")
-        new_items.extend(items3)
-        items4 = crawl_court(driver, "대구서부지원", "PGJ157M00")
-        new_items.extend(items4)
-        log.info(f"매각예정물건 소계: {len(items3) + len(items4)}건")
+        before = len(new_items)
+        for court in DAEGU_COURTS:
+            items = crawl_court(driver, court, "PGJ157M00")
+            log.info(f"  → {court} 매각예정: {len(items)}건")
+            new_items.extend(items)
+        log.info(f"매각예정물건 소계: {len(new_items) - before}건")
 
         log.info(f"\n오늘 전체 수집: {len(new_items)}건")
 
@@ -406,22 +408,20 @@ def run():
     finally:
         driver.quit()
 
-    # 대구 물건 필터
-    daegu_items = [
+    # 지역 필터: 대구 또는 경상북도
+    region_items = [
         i for i in new_items
-        if "대구" in i.get("address", "") or "대구" in i.get("court", "")
+        if any(k in i.get("address", "") for k in ["대구", "경상북도", "경북"])
+        or i.get("court", "")
     ]
-    log.info(f"대구 필터: {len(daegu_items)}건")
+    log.info(f"지역 필터(대구+경북): {len(region_items)}건")
 
-    if not daegu_items and not existing_data:
+    if not region_items and not existing_data:
         log.warning("수집 데이터 없음")
         return
 
-    # 누적 병합
-    merged = merge_data(existing_data, daegu_items or new_items)
+    merged = merge_data(existing_data, region_items or new_items)
     final_items = list(merged.values())
-
-    # 입찰일 기준 정렬 (가까운 순)
     final_items.sort(key=lambda x: x.get("bid_date", "9999"))
 
     log.info(f"✅ 최종 저장: {len(final_items)}건 (누적)")
