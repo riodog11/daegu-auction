@@ -1,7 +1,8 @@
 """
-대구 법원경매 자동 수집기 v13
+대구·경북 법원경매 자동 수집기 v14
 =====================================
-- 대구지방법원 + 대구서부지원 둘 다 수집
+- 대구지방법원 + 대구서부지원 + 경북 7개 지원 전체 수집
+- 아파트만 필터링 (집합건물 + 단지명 키워드)
 - 누적 저장 방식 (기존 데이터 유지하면서 신규 추가)
 """
 
@@ -26,11 +27,14 @@ log = logging.getLogger(__name__)
 BASE_URL = "https://www.courtauction.go.kr"
 DATA_FILE = "data.json"
 
-# 대구 법원 목록
+# 대구·경북 전체 법원 목록
 DAEGU_COURTS = [
     "대구지방법원", "대구서부지원", "안동지원", "경주지원",
     "김천지원", "상주지원", "의성지원", "영덕지원", "포항지원",
 ]
+
+# 대구 소속 법원 (이외에는 경상북도로 시/도 선택)
+DAEGU_CITY_COURTS = ["대구지방법원", "대구서부지원"]
 
 
 def get_driver():
@@ -86,10 +90,13 @@ def parse_price(text):
     return total
 
 
-def setup_filters(driver, court_name=None):
-    """대구 + 특정 법원 필터 설정"""
+def setup_filters(driver, court_name=None, sido_name="대구"):
+    """시/도 + 특정 법원 필터 설정
+    sido_name: '대구' 또는 '경상북도'
+    """
     result = driver.execute_script("""
         var courtName = arguments[0];
+        var sidoName = arguments[1];
         var selects = document.querySelectorAll('select');
         var info = [];
 
@@ -97,14 +104,14 @@ def setup_filters(driver, court_name=None):
             var name = sel.name || sel.id || '';
             var opts = Array.from(sel.options).map(o => ({v: o.value, t: o.text.trim()}));
 
-            // 시/도 → 대구광역시
+            // 시/도 선택 (대구광역시 또는 경상북도)
             var hasSido = opts.some(o => o.t.includes('부산') || o.t.includes('인천') || o.t.includes('광주'));
             if(hasSido) {
-                var daeguOpt = opts.find(o => o.t.includes('대구'));
-                if(daeguOpt) {
-                    sel.value = daeguOpt.v;
+                var sidoOpt = opts.find(o => o.t.includes(sidoName));
+                if(sidoOpt) {
+                    sel.value = sidoOpt.v;
                     sel.dispatchEvent(new Event('change', {bubbles: true}));
-                    info.push('✅ 시/도: ' + daeguOpt.t + ' (' + name + ')');
+                    info.push('✅ 시/도: ' + sidoOpt.t + ' (' + name + ')');
                 }
             }
 
@@ -119,7 +126,7 @@ def setup_filters(driver, court_name=None):
             }
         }
         return info;
-    """, court_name)
+    """, court_name, sido_name)
 
     for line in (result or []):
         log.info(f"  {line}")
@@ -266,12 +273,13 @@ def go_next_page(driver, current_page):
     return False
 
 
-
 def crawl_court(driver, court_name, page_type="PGJ151F00"):
     """특정 법원 전체 수집
     page_type: PGJ151F00=물건상세검색(2주치), PGJ157M00=매각예정물건(6주치)
     """
-    log.info(f"법원: {court_name} / 유형: {page_type}")
+    # 대구 소속이면 시/도='대구', 아니면 '경상북도'
+    sido = "대구" if court_name in DAEGU_CITY_COURTS else "경상북도"
+    log.info(f"법원: {court_name} / 시도: {sido} / 유형: {page_type}")
 
     all_items = []
 
@@ -283,7 +291,7 @@ def crawl_court(driver, court_name, page_type="PGJ151F00"):
     log.info(f"접속 완료")
 
     # 필터 설정
-    setup_filters(driver, court_name)
+    setup_filters(driver, court_name, sido)
 
     # 검색
     try:
@@ -318,7 +326,7 @@ def crawl_court(driver, court_name, page_type="PGJ151F00"):
 
     while page <= 200:
         items = collect_page(driver, court_name)
-        log.info(f"  페이지 {page}: {len(items)}건")
+        log.info(f"  페이지 {page}: {len(items)}건 (아파트)")
 
         if not items:
             break
@@ -408,11 +416,10 @@ def run():
     finally:
         driver.quit()
 
-    # 지역 필터: 대구 또는 경상북도
+    # 지역 필터: 주소에 대구 또는 경상북도가 있는 것만
     region_items = [
         i for i in new_items
         if any(k in i.get("address", "") for k in ["대구", "경상북도", "경북"])
-        or i.get("court", "")
     ]
     log.info(f"지역 필터(대구+경북): {len(region_items)}건")
 
@@ -420,7 +427,7 @@ def run():
         log.warning("수집 데이터 없음")
         return
 
-    merged = merge_data(existing_data, region_items or new_items)
+    merged = merge_data(existing_data, region_items)
     final_items = list(merged.values())
     final_items.sort(key=lambda x: x.get("bid_date", "9999"))
 
