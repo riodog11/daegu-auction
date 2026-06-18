@@ -133,6 +133,71 @@ def setup_filters(driver, court_name=None, sido_name="대구"):
     time.sleep(1)
 
 
+def select_apartment_usage(driver):
+    """용도 드롭다운을 건물 → 주거용건물 → 아파트 순으로 선택.
+    WebSquare 연쇄 드롭다운이라 각 단계 후 대기 필요.
+    성공하면 True, 실패하면 False 반환.
+    """
+    # 1) 대분류 = 건물
+    r1 = driver.execute_script("""
+        var selects = document.querySelectorAll('select');
+        for(var sel of selects){
+            var id = sel.id || '';
+            if(id.indexOf('rletLclLst') > -1){
+                var opt = Array.from(sel.options).find(o => o.text.trim() === '건물');
+                if(opt){
+                    sel.value = opt.value;
+                    sel.dispatchEvent(new Event('change', {bubbles:true}));
+                    return '대분류=건물 선택';
+                }
+            }
+        }
+        return '대분류 select 못찾음';
+    """)
+    log.info(f"  [용도] {r1}")
+    time.sleep(2)
+
+    # 2) 중분류 = 주거용건물
+    r2 = driver.execute_script("""
+        var selects = document.querySelectorAll('select');
+        for(var sel of selects){
+            var id = sel.id || '';
+            if(id.indexOf('rletMclLst') > -1){
+                var opt = Array.from(sel.options).find(o => o.text.trim() === '주거용건물');
+                if(opt){
+                    sel.value = opt.value;
+                    sel.dispatchEvent(new Event('change', {bubbles:true}));
+                    return '중분류=주거용건물 선택';
+                }
+            }
+        }
+        return '중분류 select 못찾음';
+    """)
+    log.info(f"  [용도] {r2}")
+    time.sleep(2)
+
+    # 3) 소분류 = 아파트
+    r3 = driver.execute_script("""
+        var selects = document.querySelectorAll('select');
+        for(var sel of selects){
+            var id = sel.id || '';
+            if(id.indexOf('rletSclLst') > -1){
+                var opt = Array.from(sel.options).find(o => o.text.trim() === '아파트');
+                if(opt){
+                    sel.value = opt.value;
+                    sel.dispatchEvent(new Event('change', {bubbles:true}));
+                    return '소분류=아파트 선택';
+                }
+            }
+        }
+        return '소분류 select 못찾음';
+    """)
+    log.info(f"  [용도] {r3}")
+    time.sleep(1)
+
+    return '못찾음' not in (r1 + r2 + r3)
+
+
 # 아파트 단지명 추정 키워드 (집합건물 중 아파트만 거르기 위한 것)
 APT_KEYWORDS = [
     "아파트", "캐슬", "자이", "푸르지오", "힐스테이트", "코아", "코오롱",
@@ -200,11 +265,9 @@ def collect_page(driver, court_name):
                         bid_date = dm.group(1).replace("-", ".")
 
                 # ── 아파트 필터 ──
-                # 1차: 집합건물이 아니면 제외 (토지/공장 등)
+                # 용도 드롭다운에서 이미 아파트로 검색했으므로,
+                # 여기서는 집합건물 여부만 안전장치로 확인 (토지/공장 배제)
                 if not is_jiphap:
-                    continue
-                # 2차: 주소에 아파트 단지명 키워드가 있어야 통과
-                if not any(kw in address for kw in APT_KEYWORDS):
                     continue
 
                 court = court_name
@@ -292,6 +355,13 @@ def crawl_court(driver, court_name, page_type="PGJ151F00"):
 
     # 필터 설정
     setup_filters(driver, court_name, sido)
+
+    # 용도: 건물 → 주거용건물 → 아파트 선택
+    usage_ok = select_apartment_usage(driver)
+    if usage_ok:
+        log.info("  ✅ 용도=아파트 선택 성공")
+    else:
+        log.warning("  ⚠️ 용도 선택 실패 — 단지명 키워드로 대체 필터링됨")
 
     # 검색
     try:
