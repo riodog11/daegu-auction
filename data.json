@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-17 20:15:07",
-  "total": 377,
+  "updated_at": "2026-06-18 13:35:09",
+  "total": 378,
   "items": [
     {
       "case_no": "대구지방법원2023타경118378",
@@ -3360,7 +3360,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-06-17"
+      "collected_at": "2026-06-18"
     },
     {
       "case_no": "대구지방법원2020타경1097",
@@ -3381,7 +3381,28 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-06-17"
+      "collected_at": "2026-06-18"
+    },
+    {
+      "case_no": "포항지원2024타경2754",
+      "court": "포항지원",
+      "address": "경상북도 포항시 북구 두호로 25 5층501호 (두호동,아이코아)",
+      "apt_name": "5층501호 (두호동,아이코아)",
+      "area": "152.12",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 71500,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.06.22",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-06-18"
     },
     {
       "case_no": "대구지방법원2024타경3534",
@@ -3402,7 +3423,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-06-17"
+      "collected_at": "2026-06-18"
     },
     {
       "case_no": "대구서부지원2024타경43201",
@@ -3423,7 +3444,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-06-17"
+      "collected_at": "2026-06-18"
     },
     {
       "case_no": "대구서부지원2023타경41642 선택",
@@ -3444,7 +3465,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-06-17"
+      "collected_at": "2026-06-18"
     },
     {
       "case_no": "대구지방법원2025타경963",
