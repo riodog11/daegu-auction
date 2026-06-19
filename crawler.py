@@ -198,6 +198,34 @@ def select_apartment_usage(driver):
     return '못찾음' not in (r1 + r2 + r3)
 
 
+def extract_apt_name(address):
+    """주소에서 아파트 단지명 추출"""
+    if not address:
+        return ""
+
+    # 1) 괄호 안에 단지명: (지산동,지산보성맨션) → 마지막 부분
+    m = re.search(r'\(([^)]+)\)', address)
+    if m:
+        inside = m.group(1)
+        parts = [p.strip() for p in inside.split(',')]
+        name = parts[-1]
+        if name:
+            return name
+
+    # 2) 괄호 없으면 번지수 뒤 ~ 동/층/호 앞까지
+    m2 = re.search(r'\d+(-\d+)?\s+(.+)', address)
+    if m2:
+        rest = m2.group(2)
+        rest = re.split(r'\s*\d+동', rest)[0]
+        rest = re.split(r'\s*\d+층', rest)[0]
+        rest = re.split(r'\s*\d+호', rest)[0]
+        name = rest.strip()
+        if name:
+            return name
+
+    return address
+
+
 # 아파트 단지명 추정 키워드 (집합건물 중 아파트만 거르기 위한 것)
 APT_KEYWORDS = [
     "아파트", "캐슬", "자이", "푸르지오", "힐스테이트", "코아", "코오롱",
@@ -283,7 +311,7 @@ def collect_page(driver, court_name):
                     "case_no": case_no,
                     "court": court or court_name,
                     "address": address,
-                    "apt_name": " ".join(address.split()[-2:]) if address else "",
+                    "apt_name": extract_apt_name(address),
                     "area": area, "floor": "", "direction": "",
                     "item_type": "아파트",
                     "appraisal": appraisal,
