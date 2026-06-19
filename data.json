@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-19 06:47:24",
-  "total": 192,
+  "updated_at": "2026-06-19 19:58:27",
+  "total": 193,
   "items": [
     {
       "case_no": "대구지방법원2024타경9532",
@@ -3687,6 +3687,27 @@
       "direction": "",
       "item_type": "아파트",
       "appraisal": 17400,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.07.09",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-06-19"
+    },
+    {
+      "case_no": "대구서부지원2025타경1167 선택",
+      "court": "대구서부지원",
+      "address": "대구광역시 달서구 송현동 906 우방송현하이츠 102동 5층502호",
+      "apt_name": "우방송현하이츠",
+      "area": "202.59",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 55300,
       "min_price": 0,
       "discount": 0,
       "bid_date": "2026.07.09",
