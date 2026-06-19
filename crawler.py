@@ -143,7 +143,7 @@ def select_apartment_usage(driver):
         var selects = document.querySelectorAll('select');
         for(var sel of selects){
             var id = sel.id || '';
-            if(id.indexOf('rletLclLst') > -1){
+            if(id.indexOf('LclLst') > -1){
                 var opt = Array.from(sel.options).find(o => o.text.trim() === '건물');
                 if(opt){
                     sel.value = opt.value;
@@ -162,7 +162,7 @@ def select_apartment_usage(driver):
         var selects = document.querySelectorAll('select');
         for(var sel of selects){
             var id = sel.id || '';
-            if(id.indexOf('rletMclLst') > -1){
+            if(id.indexOf('MclLst') > -1){
                 var opt = Array.from(sel.options).find(o => o.text.trim() === '주거용건물');
                 if(opt){
                     sel.value = opt.value;
@@ -181,7 +181,7 @@ def select_apartment_usage(driver):
         var selects = document.querySelectorAll('select');
         for(var sel of selects){
             var id = sel.id || '';
-            if(id.indexOf('rletSclLst') > -1){
+            if(id.indexOf('SclLst') > -1){
                 var opt = Array.from(sel.options).find(o => o.text.trim() === '아파트');
                 if(opt){
                     sel.value = opt.value;
