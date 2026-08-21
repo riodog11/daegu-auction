@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-20 18:46:25",
-  "total": 1145,
+  "updated_at": "2026-08-21 18:44:21",
+  "total": 1152,
   "items": [
     {
       "case_no": "대구지방법원2024타경9532",
@@ -12645,48 +12645,6 @@
       "collected_at": "2026-08-12"
     },
     {
-      "case_no": "대구서부지원2025타경31705 선택",
-      "court": "대구서부지원",
-      "address": "대구광역시 달서구 도원동 1429 한실들마을 510동 10층1004호",
-      "apt_name": "한실들마을",
-      "area": "59.76",
-      "floor": "",
-      "direction": "",
-      "item_type": "아파트",
-      "appraisal": 13300,
-      "min_price": 0,
-      "discount": 0,
-      "bid_date": "2026.08.13",
-      "status": "진행",
-      "lat": 35.8714,
-      "lng": 128.6014,
-      "documents": [],
-      "detail_url": "",
-      "blog_url": "",
-      "collected_at": "2026-07-28"
-    },
-    {
-      "case_no": "대구서부지원2025타경32237 선택",
-      "court": "대구서부지원",
-      "address": "대구광역시 달서구 월성동 1261 월성자이아파트 105동 9층903호",
-      "apt_name": "월성자이아파트",
-      "area": "125.7931",
-      "floor": "",
-      "direction": "",
-      "item_type": "아파트",
-      "appraisal": 48200,
-      "min_price": 0,
-      "discount": 0,
-      "bid_date": "2026.08.13",
-      "status": "진행",
-      "lat": 35.8714,
-      "lng": 128.6014,
-      "documents": [],
-      "detail_url": "",
-      "blog_url": "",
-      "collected_at": "2026-07-28"
-    },
-    {
       "case_no": "대구지방법원2025타경669 선택",
       "court": "대구지방법원",
       "address": "대구광역시 수성구 범어동 966-1 범어 월드메르디앙 웨스턴카운티 203동 2층203호",
@@ -18669,7 +18627,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3599",
@@ -18690,7 +18648,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3741",
@@ -18711,7 +18669,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3785",
@@ -18732,7 +18690,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3974",
@@ -18753,7 +18711,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3999",
@@ -18774,7 +18732,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4004",
@@ -18795,7 +18753,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4014",
@@ -18816,7 +18774,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4075",
@@ -18837,7 +18795,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "안동지원2025타경100561",
@@ -18858,7 +18816,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2024타경3597",
@@ -18879,7 +18837,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4094",
@@ -18900,7 +18858,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9008",
@@ -18921,7 +18879,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9145",
@@ -18942,7 +18900,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9194",
@@ -18963,7 +18921,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9273",
@@ -18984,7 +18942,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9286",
@@ -19005,7 +18963,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9291",
@@ -19026,7 +18984,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9008 선택",
@@ -19446,7 +19404,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9321",
@@ -19467,7 +19425,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9399",
@@ -19488,7 +19446,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9462",
@@ -19509,7 +19467,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9546",
@@ -19530,7 +19488,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9588",
@@ -19551,7 +19509,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9596",
@@ -19572,7 +19530,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9620",
@@ -19593,7 +19551,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "안동지원2025타경100412",
@@ -19614,7 +19572,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "안동지원2025타경100516",
@@ -19635,7 +19593,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4134",
@@ -19656,7 +19614,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4155",
@@ -19677,7 +19635,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경8824",
@@ -19698,7 +19656,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경8612",
@@ -19719,7 +19677,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경8801",
@@ -19740,7 +19698,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경8898",
@@ -19782,7 +19740,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9035",
@@ -19803,7 +19761,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "경주지원2025타경10769",
@@ -19824,7 +19782,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "경주지원2025타경530",
@@ -19845,7 +19803,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "경주지원2025타경10769 선택",
@@ -20055,7 +20013,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경1098",
@@ -20076,7 +20034,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경1146",
@@ -20097,7 +20055,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경8660",
@@ -20118,7 +20076,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9349",
@@ -20139,7 +20097,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9408",
@@ -20160,7 +20118,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9443",
@@ -20181,7 +20139,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9456",
@@ -20202,7 +20160,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9467",
@@ -20223,7 +20181,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "경주지원2025타경606",
@@ -20244,7 +20202,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "경주지원2025타경10717",
@@ -20265,7 +20223,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "경주지원2026타경34",
@@ -20286,7 +20244,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9062",
@@ -20307,7 +20265,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경1101",
@@ -20328,7 +20286,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경1137",
@@ -20349,7 +20307,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경79472025타경8641(병합)",
@@ -20370,7 +20328,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경8276",
@@ -20391,7 +20349,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경8582",
@@ -20412,7 +20370,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9076",
@@ -20433,7 +20391,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2024타경11061",
@@ -20475,7 +20433,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9293",
@@ -20496,7 +20454,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9376",
@@ -20517,7 +20475,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2024타경11061 선택",
@@ -20769,7 +20727,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경1221",
@@ -20790,7 +20748,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경1245",
@@ -20811,7 +20769,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경1327",
@@ -20832,7 +20790,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9674",
@@ -20853,7 +20811,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9807",
@@ -20874,7 +20832,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9818",
@@ -20895,7 +20853,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경9888",
@@ -20916,7 +20874,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3929",
@@ -20937,7 +20895,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3584",
@@ -20958,7 +20916,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3839",
@@ -20979,7 +20937,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4000",
@@ -21000,7 +20958,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4010",
@@ -21021,7 +20979,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경442",
@@ -21042,7 +21000,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경500",
@@ -21063,7 +21021,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3879",
@@ -21084,7 +21042,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4130",
@@ -21105,7 +21063,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4140",
@@ -21126,7 +21084,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경442 선택",
@@ -21315,7 +21273,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경545",
@@ -21336,7 +21294,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경550",
@@ -21357,7 +21315,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4135",
@@ -21378,7 +21336,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4150",
@@ -21399,7 +21357,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4160",
@@ -21420,7 +21378,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4201",
@@ -21441,7 +21399,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4205",
@@ -21462,7 +21420,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31536",
@@ -21483,7 +21441,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31590",
@@ -21504,7 +21462,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31704",
@@ -21525,7 +21483,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31928",
@@ -21546,7 +21504,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경32275",
@@ -21567,7 +21525,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31536 선택",
@@ -21693,7 +21651,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2026타경3288",
@@ -21714,7 +21672,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경435",
@@ -21735,7 +21693,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11271",
@@ -21756,7 +21714,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11357",
@@ -21777,7 +21735,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경500",
@@ -21798,7 +21756,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11392",
@@ -21819,7 +21777,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11507",
@@ -21840,7 +21798,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11567",
@@ -21861,7 +21819,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경435 선택",
@@ -22050,7 +22008,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경3149",
@@ -22071,7 +22029,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31482",
@@ -22092,7 +22050,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31631",
@@ -22113,7 +22071,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31661",
@@ -22134,7 +22092,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31691",
@@ -22155,7 +22113,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31583",
@@ -22176,7 +22134,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경3149 선택",
@@ -22323,7 +22281,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3642 선택",
@@ -22365,7 +22323,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3921 선택",
@@ -22386,7 +22344,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4002 선택",
@@ -22407,7 +22365,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4047 선택",
@@ -22428,7 +22386,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4068 선택",
@@ -22449,7 +22407,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4122 선택",
@@ -22470,7 +22428,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4147 선택",
@@ -22491,7 +22449,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2024타경35051 선택",
@@ -22512,7 +22470,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3662 선택",
@@ -22554,7 +22512,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3981 선택",
@@ -22575,7 +22533,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4178 선택",
@@ -22596,7 +22554,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4187 선택",
@@ -22617,7 +22575,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4197 선택",
@@ -22638,7 +22596,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4207 선택",
@@ -22659,7 +22617,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2024타경34379 선택",
@@ -22680,7 +22638,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경567 선택",
@@ -22701,7 +22659,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경587 선택",
@@ -22722,7 +22680,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4257 선택",
@@ -22743,7 +22701,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4270 선택",
@@ -22764,7 +22722,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4288 선택",
@@ -22785,7 +22743,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2024타경129115 선택",
@@ -22932,7 +22890,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31956 선택",
@@ -22953,7 +22911,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경32233 선택",
@@ -22974,7 +22932,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2026타경3249 선택",
@@ -22995,7 +22953,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2024타경11191 선택",
@@ -23016,7 +22974,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경7972 선택",
@@ -23079,7 +23037,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "경주지원2026타경10064 선택",
@@ -23100,7 +23058,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2026타경3159 선택",
@@ -23121,7 +23079,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2026타경3389 선택",
@@ -23142,7 +23100,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2026타경3394 선택",
@@ -23163,7 +23121,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2026타경3465 선택",
@@ -23184,7 +23142,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2026타경3471 선택",
@@ -23205,7 +23163,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2026타경3501 선택",
@@ -23226,7 +23184,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경402 선택",
@@ -23247,7 +23205,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경10883 선택",
@@ -23268,7 +23226,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11099 선택",
@@ -23289,7 +23247,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2024타경18719 선택",
@@ -23310,7 +23268,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경418 선택",
@@ -23331,7 +23289,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2025타경7590 선택",
@@ -23373,7 +23331,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11135 선택",
@@ -23394,7 +23352,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11304 선택",
@@ -23415,7 +23373,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11321 선택",
@@ -23436,7 +23394,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11371 선택",
@@ -23457,7 +23415,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "의성지원2025타경377 선택",
@@ -23478,7 +23436,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "의성지원2025타경414 선택",
@@ -23499,7 +23457,49 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
+    },
+    {
+      "case_no": "대구서부지원2025타경31705 선택",
+      "court": "대구서부지원",
+      "address": "대구광역시 달서구 도원동 1429 한실들마을 510동 10층1004호",
+      "apt_name": "한실들마을",
+      "area": "59.76",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 13300,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.09.10",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-08-21"
+    },
+    {
+      "case_no": "대구서부지원2025타경32237 선택",
+      "court": "대구서부지원",
+      "address": "대구광역시 달서구 월성동 1261 월성자이아파트 105동 9층903호",
+      "apt_name": "월성자이아파트",
+      "area": "125.7931",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 48200,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.09.10",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11115 선택",
@@ -23520,7 +23520,154 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
+    },
+    {
+      "case_no": "대구서부지원2025타경3644 선택",
+      "court": "대구서부지원",
+      "address": "대구광역시 서구 평리동 1676 평리롯데캐슬 113동 6층607호",
+      "apt_name": "평리롯데캐슬",
+      "area": "124.3429",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 36300,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.09.10",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-08-21"
+    },
+    {
+      "case_no": "대구서부지원2025타경32150 선택",
+      "court": "대구서부지원",
+      "address": "대구광역시 달성군 구지면 창리 1354 대구국가산단영무예다음 101동 21층2101호",
+      "apt_name": "대구국가산단영무예다음",
+      "area": "67.9389",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 17600,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.09.10",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-08-21"
+    },
+    {
+      "case_no": "대구서부지원2025타경32159 선택",
+      "court": "대구서부지원",
+      "address": "대구광역시 달성군 다사읍 서재리 100 신성서화성파크드림 102동 7층703호",
+      "apt_name": "신성서화성파크드림",
+      "area": "115.4434",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 33100,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.09.10",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-08-21"
+    },
+    {
+      "case_no": "대구서부지원2025타경32221 선택",
+      "court": "대구서부지원",
+      "address": "대구광역시 달성군 구지면 창리 1434 대구국가산단디에트르더센트럴 109동 1층104호",
+      "apt_name": "대구국가산단디에트르더센트럴",
+      "area": "84.9425",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 27800,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.09.10",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-08-21"
+    },
+    {
+      "case_no": "대구서부지원2026타경33 선택",
+      "court": "대구서부지원",
+      "address": "대구광역시 달서구 도원동 1438 대곡사계절타운 302동 1층105호",
+      "apt_name": "대곡사계절타운",
+      "area": "84.965",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 20100,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.09.10",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-08-21"
+    },
+    {
+      "case_no": "대구서부지원2026타경3092 선택",
+      "court": "대구서부지원",
+      "address": "대구광역시 달서구 대천동 413 월배 힐스테이트 101동 5층508호",
+      "apt_name": "월배 힐스테이트",
+      "area": "84.9872",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 36000,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.09.10",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-08-21"
+    },
+    {
+      "case_no": "대구서부지원2026타경3228 선택",
+      "court": "대구서부지원",
+      "address": "대구광역시 달성군 화원읍 성산리 501 태왕 105동 12층1205호",
+      "apt_name": "태왕",
+      "area": "84.84",
+      "floor": "",
+      "direction": "",
+      "item_type": "아파트",
+      "appraisal": 23500,
+      "min_price": 0,
+      "discount": 0,
+      "bid_date": "2026.09.10",
+      "status": "진행",
+      "lat": 35.8714,
+      "lng": 128.6014,
+      "documents": [],
+      "detail_url": "",
+      "blog_url": "",
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11272 선택",
@@ -23541,7 +23688,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "김천지원2025타경11098 선택",
@@ -23562,7 +23709,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2022타경121216 선택",
@@ -23583,7 +23730,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2024타경5769 선택",
@@ -23604,7 +23751,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2023타경35825 선택",
@@ -23625,7 +23772,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2024타경2341 선택",
@@ -23646,7 +23793,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2024타경35723 선택",
@@ -23667,7 +23814,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경338 선택",
@@ -23688,7 +23835,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경413 선택",
@@ -23709,7 +23856,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3633 선택",
@@ -23730,7 +23877,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3872 선택",
@@ -23751,7 +23898,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경440 선택",
@@ -23772,7 +23919,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경483 선택",
@@ -23793,7 +23940,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3912 선택",
@@ -23814,7 +23961,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3932 선택",
@@ -23835,7 +23982,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3947 선택",
@@ -23856,7 +24003,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3988 선택",
@@ -23877,7 +24024,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경3998 선택",
@@ -23898,7 +24045,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "포항지원2025타경4003 선택",
@@ -23919,7 +24066,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "경주지원2025타경10863 선택",
@@ -23940,7 +24087,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경31641 선택",
@@ -23961,7 +24108,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구지방법원2024타경3534 선택",
@@ -23982,7 +24129,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "대구서부지원2025타경32210 선택",
@@ -24024,7 +24171,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     },
     {
       "case_no": "경주지원2025타경10766 선택",
@@ -24045,7 +24192,7 @@
       "documents": [],
       "detail_url": "",
       "blog_url": "",
-      "collected_at": "2026-08-20"
+      "collected_at": "2026-08-21"
     }
   ]
 }
